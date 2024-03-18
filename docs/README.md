@@ -5,8 +5,8 @@ structures.
 
 ## Usage
 
-To use this library, you need to create a class that extends the AbstractFormModel class and define the fields you want
-to use. For example:
+To use this library, you need to create a class that extends the `AbstractFormModel` class and define the fields you
+want to use. For example.
 
 ```php
 <?php
@@ -27,7 +27,7 @@ final class User extends AbstractFormModel
 
 [Operations basic with model](https://github.com/ui-awesome/model/blob/main/docs/README.md)
 
-Operations on the field model are performed using the methods provided by the `AbstractFormModel::class`.
+Operations on the field model are performed using the methods provided by the `AbstractFormModel` class.
 
 - [Add property error](#add-property-error)
 - [Clear errors](#clear-errors)
@@ -425,7 +425,7 @@ $hasValidate = $formModel->hasPropertyValidate('username');
 
 ## Methods
 
-Refer to the [Tests](https://github.com/php-forge/field-model/blob/main/tests) for comprehensive examples.
+Refer to the [Tests](https://github.com/ui-awesome/form-model/blob/main/tests) for comprehensive examples.
 
 The following methods are available for setting and retrieving model data.
 
