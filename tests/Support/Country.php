@@ -7,7 +7,6 @@ namespace UIAwesome\FormModel\Tests\Support;
 use UIAwesome\FormModel\AbstractFormModel;
 
 final class Country extends AbstractFormModel
-
 {
     public string $name = '';
     private string $postalCode = '';
