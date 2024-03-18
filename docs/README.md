@@ -25,7 +25,7 @@ final class User extends AbstractFormModel
 }
 ```
 
-[Operations basic with model](https://github.com/php-forge/model/blob/main/docs/README.md)
+[Operations basic with model](https://github.com/ui-awesome/model/blob/main/docs/README.md)
 
 Operations on the field model are performed using the methods provided by the `AbstractFormModel::class`.
 
