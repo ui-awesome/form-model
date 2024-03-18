@@ -198,6 +198,13 @@ final class FormModelTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $formModel->getPropertyError('name', true));
     }
 
+    public function testGetRules(): void
+    {
+        $formModel = new Country();
+
+        $this->assertEmpty($formModel->getRules());
+    }
+
     public function testGetWidgetConfig(): void
     {
         $formModel = new User();
@@ -241,6 +248,13 @@ final class FormModelTest extends \PHPUnit\Framework\TestCase
             ],
             $formModel->getWidgetConfigByProperty('name')
         );
+    }
+
+    public function testGetWidgetConfigByPropertyWithEmpty(): void
+    {
+        $formModel = new Country();
+
+        $this->assertEmpty($formModel->getWidgetConfigByProperty('name'));
     }
 
     public function testHasPropertyError(): void

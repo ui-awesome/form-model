@@ -54,7 +54,6 @@ final class FieldNestedTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($fieldModel->getRulesByProperty('profile.address.city'));
         $this->assertSame([$validatorObject], $fieldModel->getRulesByProperty('profile.bio'));
         $this->assertSame([$validatorObject], $fieldModel->getRulesByProperty('profile.address.street'));
-        $this->assertSame([$validatorObject], $fieldModel->getRulesByProperty('profile.address.country.name'));
     }
 
     public function testGetWidgetByPropertySeveralNestedLevels(): void
@@ -84,12 +83,6 @@ final class FieldNestedTest extends \PHPUnit\Framework\TestCase
                 'class()' => ['text-red-100 dark:text-red-100'],
             ],
             $fieldModel->getWidgetConfigByProperty('profile.address.city')
-        );
-        $this->assertSame(
-            [
-                'class()' => ['text-yellow-100 dark:text-yellow-100'],
-            ],
-            $fieldModel->getWidgetConfigByProperty('profile.address.country.name')
         );
     }
 }

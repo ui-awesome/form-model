@@ -40,20 +40,4 @@ final class Country extends AbstractFormModel
             'name' => 'Enter country name',
         ];
     }
-
-    public function getRules(): array
-    {
-        return [
-            'name' => [$this->object],
-        ];
-    }
-
-    public function getWidgetConfigByProperties(): array
-    {
-        return [
-            'name' => [
-                'class()' => ['text-yellow-100 dark:text-yellow-100'],
-            ],
-        ];
-    }
 }
