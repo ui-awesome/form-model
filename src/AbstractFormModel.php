@@ -4,42 +4,39 @@ declare(strict_types=1);
 
 namespace UIAwesome\FormModel;
 
-use PHPForge\Helper\WordFormatter;
-use UIAwesome\{Html\Interop\InputInterface, Model\AbstractModel};
+use PHPForge\Helper\WordCaseConverter;
+use UIAwesome\Model\AbstractModel;
 
 abstract class AbstractFormModel extends AbstractModel implements FormModelInterface
 {
-    private FieldMetadata|null $fieldMetadata = null;
     private FieldError|null $fieldError = null;
+    private FieldMetadata|null $fieldMetadata = null;
 
     public function addPropertyError(string $property, string $error): void
     {
         $this->error()->add($property, $error);
     }
 
-    public function applyToHtmlRulesByProperty(InputInterface $input, string $property): InputInterface
-    {
-        return $input;
-    }
-
-    public function clearError(string $property = null): void
+    public function clearError(string|null $property = null): void
     {
         $this->error()->clear($property);
     }
 
-    public function getErrorSummary(array $onlyProperties = [], bool $first = false): array
-    {
-        return $this->error()->getSummary($onlyProperties, $first);
-    }
-
+    /**
+     * @phpstan-return array<string, array<int, string>|string>
+     */
     public function getErrors(bool $first = false): array
     {
         return $this->error()->get($first);
     }
 
-    public function getPropertyError(string $property, bool $first = false): array|string
+    /**
+     * @phpstan-param list<string> $onlyProperties
+     * @phpstan-return array<array-key, string>
+     */
+    public function getErrorSummary(array $onlyProperties = [], bool $first = false): array
     {
-        return $this->error()->getProperty($property, $first);
+        return $this->error()->getSummary($onlyProperties, $first);
     }
 
     public function getHintByProperty(string $property): string
@@ -56,7 +53,7 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
 
     public function getLabelByProperty(string $property): string
     {
-        $generateLabel = WordFormatter::capitalizeToWords($property);
+        $generateLabel = WordCaseConverter::toTitleWords($property);
         $labelByProperty = $this->metadata()->get('getLabels', 'getLabelByProperty', $property, $generateLabel);
 
         return is_string($labelByProperty) ? $labelByProperty : '';
@@ -79,11 +76,22 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
         return [];
     }
 
+    public function getPropertyError(string $property, bool $first = false): array|string
+    {
+        return $this->error()->getProperty($property, $first);
+    }
+
+    /**
+     * @phpstan-return iterable<string, mixed[]>
+     */
     public function getRules(): iterable
     {
         return [];
     }
 
+    /**
+     * @phpstan-return mixed[]|null
+     */
     public function getRulesByProperty(string $property): array|null
     {
         $ruleByProperty = $this->metadata()->get('getRules', 'getRulesByProperty', $property);
@@ -91,41 +99,30 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
         return is_array($ruleByProperty) ? $ruleByProperty : null;
     }
 
-    public function getWidgetConfig(): array
+    /**
+     * @phpstan-return array<string, array<string, array<int, string>>>
+     */
+    public function getFieldConfigByProperties(): array
     {
         return [];
     }
 
-    public function getWidgetConfigByClass(string $class): array
+    /**
+     * @phpstan-return array<int|string, mixed>
+     */
+    public function getFieldConfigByProperty(string $property): array
     {
-        $widgetConfigByClass = $this->metadata()->get(
-            'getWidgetConfig',
-            'getWidgetConfigByClass',
-            $class,
-            [],
-        );
-
-        return is_array($widgetConfigByClass) ? $widgetConfigByClass : [];
-    }
-
-    public function getWidgetConfigByProperty(string $property): array
-    {
-        $widgetConfigByProperty = $this->metadata()->get(
-            'getWidgetConfigByProperties',
-            'getWidgetConfigByProperty',
+        $fieldConfigByProperty = $this->metadata()->get(
+            'getFieldConfigByProperties',
+            'getFieldConfigByProperty',
             $property,
             [],
         );
 
-        return is_array($widgetConfigByProperty) ? $widgetConfigByProperty : [];
+        return is_array($fieldConfigByProperty) ? $fieldConfigByProperty : [];
     }
 
-    public function getWidgetConfigByProperties(): array
-    {
-        return [];
-    }
-
-    public function hasPropertyError(string $property = null): bool
+    public function hasPropertyError(string|null $property = null): bool
     {
         return $this->error()->has($property);
     }

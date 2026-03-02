@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace UIAwesome\FormModel;
 
-use UIAwesome\{Html\Interop\InputInterface, Model\ModelInterface};
+use UIAwesome\Model\ModelInterface;
 
 /**
  * The FormModelInterface class defines a set of methods that must be implemented by classes that represent a form
@@ -25,33 +25,11 @@ interface FormModelInterface extends ModelInterface
     public function addPropertyError(string $property, string $error): void;
 
     /**
-     * Set html validation rules for the specified property.
-     *
-     * @param InputInterface $input The input widget.
-     * @param string $property The property name.
-     *
-     * @return InputInterface The input widget with the validation rules applied.
-     */
-    public function applyToHtmlRulesByProperty(InputInterface $input, string $property): InputInterface;
-
-    /**
      * Clear errors for all or a single property.
      *
      * @param string|null $property The property name. Use null to clear errors for all properties.
      */
-    public function clearError(string $property = null): void;
-
-    /**
-     * Get the error of every property in the collection.
-     *
-     * @param array $onlyProperties List of properties to return errors.
-     * @param bool $first Whether to return only the first error of each property.
-     *
-     * @return array The errors for all properties as a one-dimensional array.
-     * Empty array is returned if no error.
-     * If `$first` is `true`, only the first error of each property is returned.
-     */
-    public function getErrorSummary(array $onlyProperties = [], bool $first = false): array;
+    public function clearError(string|null $property = null): void;
 
     /**
      * Get all errors for all properties.
@@ -73,8 +51,25 @@ interface FormModelInterface extends ModelInterface
      *     ]
      * ]
      * ```
+     *
+     * @phpstan-return array<string, array<int, string>|string>
      */
     public function getErrors(bool $first = false): array;
+
+    /**
+     * Get the error of every property in the collection.
+     *
+     * @param array $onlyProperties List of properties to return errors.
+     * @param bool $first Whether to return only the first error of each property.
+     *
+     * @return array The errors for all properties as a one-dimensional array.
+     * Empty array is returned if no error.
+     * If `$first` is `true`, only the first error of each property is returned.
+     *
+     * @phpstan-param list<string> $onlyProperties
+     * @phpstan-return array<int|string, string>
+     */
+    public function getErrorSummary(array $onlyProperties = [], bool $first = false): array;
 
     /**
      * @param string $property The property name.
@@ -92,7 +87,7 @@ interface FormModelInterface extends ModelInterface
      * ]
      * ```
      *
-     * @psalm-return string[]
+     * @phpstan-return string[]
      */
     public function getHints(): array;
 
@@ -111,7 +106,7 @@ interface FormModelInterface extends ModelInterface
      *     'property' => 'labelText',
      * ]
      *
-     * @psalm-return string[]
+     * @phpstan-return string[]
      */
     public function getLabels(): array;
 
@@ -131,7 +126,7 @@ interface FormModelInterface extends ModelInterface
      * ]
      * ```
      *
-     * @psalm-return string[]
+     * @phpstan-return string[]
      */
     public function getPlaceholders(): array;
 
@@ -145,12 +140,14 @@ interface FormModelInterface extends ModelInterface
      * Empty array is returned if no error.
      * If `$first` is `true`, only the first error is returned.
      *
-     * @psalm-return array<string>|string
+     * @phpstan-return array<string>|string
      */
     public function getPropertyError(string $property, bool $first = false): array|string;
 
     /**
      * @return iterable A set of validation rules.
+     *
+     * @phpstan-return iterable<string, array<mixed, mixed>>
      */
     public function getRules(): iterable;
 
@@ -158,49 +155,15 @@ interface FormModelInterface extends ModelInterface
      * @param string $property The property name.
      *
      * @return array|null The validation rules for the specified property. Null is returned if no rules are defined.
+     *
+     * @phpstan-return array<mixed, mixed>|null
      */
     public function getRulesByProperty(string $property): array|null;
 
     /**
-     * Returns the configurations for multiple widgets, indexed by Widget class name.
+     * Returns the field configurations for multiple properties, indexed by property name.
      *
-     * @return array The configurations for multiple widgets in an associative array format.
-     *
-     * Example:
-     * ```php
-     * [
-     *     Button::class => [
-     *         'class()' => ['text-gray-100 dark:text-gray-100'],
-     *     ],
-     * ]
-     * ```
-     */
-    public function getWidgetConfig(): array;
-
-    /**
-     * Returns the widget configuration for the specified widget class.
-     *
-     * @param string $class The widget class name.
-     *
-     * @return array The widget configuration for the specified widget class.
-     *
-     * @psalm-param class-string $class
-     */
-    public function getWidgetConfigByClass(string $class): array;
-
-    /**
-     * Returns the widget configuration for the specified property.
-     *
-     * @param string $property The property name.
-     *
-     * @return array The widget configuration for the specified property.
-     */
-    public function getWidgetConfigByProperty(string $property): array;
-
-    /**
-     * Returns the widget configurations for multiple properties, indexed by property name.
-     *
-     * @return array The widget configurations for multiple properties in an associative array format.
+     * @return array The field configurations for multiple properties in an associative array format.
      *
      * ```php
      * [
@@ -209,8 +172,21 @@ interface FormModelInterface extends ModelInterface
      *     ],
      * ]
      * ```
+     *
+     * @phpstan-return array<string, array<string, array<int, string>>>
      */
-    public function getWidgetConfigByProperties(): array;
+    public function getFieldConfigByProperties(): array;
+
+    /**
+     * Returns the field configuration for the specified property.
+     *
+     * @param string $property The property name.
+     *
+     * @return array The field configuration for the specified property.
+     *
+     * @phpstan-return array<int|string, mixed>
+     */
+    public function getFieldConfigByProperty(string $property): array;
 
     /**
      * Returns a value indicating whether there is any validation error.
@@ -219,7 +195,7 @@ interface FormModelInterface extends ModelInterface
      *
      * @return bool Whether there is any error.
      */
-    public function hasPropertyError(string $property = null): bool;
+    public function hasPropertyError(string|null $property = null): bool;
 
     /**
      * Returns a `true` indicating whether the property is validated successfully, `false` otherwise.
@@ -233,7 +209,7 @@ interface FormModelInterface extends ModelInterface
      *
      * @param array $values The property names and the corresponding error messages.
      *
-     * @psalm-param array<array<string>> $values
+     * @phpstan-param array<string, array<int, string>> $values
      *
      * ```php
      * [

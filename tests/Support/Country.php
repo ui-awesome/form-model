@@ -13,10 +13,15 @@ final class Country extends AbstractFormModel
 
     public function __construct(private readonly object|null $object = null) {}
 
-    public function __debugInfo()
+    /**
+     * @return array<string, mixed>
+     */
+    public function __debugInfo(): array
     {
         return [
             'name' => $this->name,
+            'postalCode' => $this->postalCode,
+            'object' => $this->object,
         ];
     }
 

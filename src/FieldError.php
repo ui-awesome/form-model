@@ -13,12 +13,10 @@ use function reset;
  */
 final class FieldError
 {
-    /**
-     * @psalm-var string[][]
+    /** 
+     * @phpstan-var array<string, array<int, string>> 
      */
     private array $errors = [];
-
-    public function __construct() {}
 
     /**
      * Add an error for the specified property.
@@ -37,7 +35,7 @@ final class FieldError
      * @param string|null $property The property name or null to remove errors for all properties.
      * For default is `null`.
      */
-    public function clear(string $property = null): void
+    public function clear(string|null $property = null): void
     {
         if ($property !== null) {
             $this->errors[$property] = [];
@@ -46,29 +44,6 @@ final class FieldError
         }
 
         $this->errors = [];
-    }
-
-    /**
-     * Get all errors for all properties.
-     *
-     * @param array $onlyProperties List of properties to return errors.
-     * @param bool $first Whether to return only the first error of each property.
-     *
-     * @return array The errors for all properties as a one-dimensional array. Empty array is returned if no error.
-     */
-    public function getSummary(array $onlyProperties = [], bool $first = false): array
-    {
-        if ($first === true) {
-            return $this->getSummaryFirst();
-        }
-
-        $errors = $this->errors;
-
-        if ($onlyProperties !== []) {
-            $errors = array_intersect_key($errors, array_flip($onlyProperties));
-        }
-
-        return $this->renderSummary($errors);
     }
 
     /**
@@ -91,19 +66,16 @@ final class FieldError
      *     ]
      * ]
      * ```
+     *
+     * @phpstan-return array<string, array<int, string>|string>
      */
     public function get(bool $first = false): array
     {
-        if ($first === true) {
+        if ($first) {
             return $this->getFirsts();
         }
 
-        return array_filter(
-            $this->errors,
-            static function ($value) {
-                return $value !== [];
-            }
-        );
+        return array_filter($this->errors, static fn(array $value): bool => $value !== []);
     }
 
     /**
@@ -116,15 +88,43 @@ final class FieldError
      * Empty array is returned if no error.
      * If `$first` is `true`, only the first error is returned.
      *
-     * @psalm-return array<string>|string
+     * @phpstan-return array<string>|string
      */
     public function getProperty(string $property, bool $first = false): array|string
     {
-        if ($first === true) {
+        if ($first) {
             return $this->getFirst($property);
         }
 
         return $this->errors[$property] ?? [];
+    }
+
+    /**
+     * Get all errors for all properties.
+     *
+     * @param array $onlyProperties List of properties to return errors.
+     * @param bool $first Whether to return only the first error of each property.
+     *
+     * @return array The errors for all properties as a one-dimensional array. Empty array is returned if no error.
+     *
+     * @phpstan-param list<string> $onlyProperties
+     * @phpstan-return array<int|string, string>
+     */
+    public function getSummary(array $onlyProperties = [], bool $first = false): array
+    {
+        if ($first) {
+            return $this->getSummaryFirst();
+        }
+
+        $errors = $this->errors;
+
+        if ($onlyProperties !== []) {
+            $onlyPropertiesMap = array_flip($onlyProperties);
+
+            $errors = array_intersect_key($errors, $onlyPropertiesMap);
+        }
+
+        return $this->renderSummary($errors);
     }
 
     /**
@@ -134,13 +134,13 @@ final class FieldError
      *
      * @return bool Whether there is any error.
      */
-    public function has(string $property = null): bool
+    public function has(string|null $property = null): bool
     {
         if ($property === null) {
             return $this->get() !== [];
         }
 
-        return !empty($this->errors[$property]);
+        return isset($this->errors[$property]) && $this->errors[$property] !== [];
     }
 
     /**
@@ -158,7 +158,7 @@ final class FieldError
      *
      * @param array $values The property names and the corresponding error messages.
      *
-     * @psalm-param array<array<string>> $values
+     * @phpstan-param array<string, array<int, string>> $values
      */
     public function set(array $values): void
     {
@@ -174,7 +174,7 @@ final class FieldError
      */
     private function getFirst(string $property): string
     {
-        if (empty($this->errors[$property])) {
+        if (!isset($this->errors[$property]) || $this->errors[$property] === []) {
             return '';
         }
 
@@ -186,21 +186,19 @@ final class FieldError
      *
      * @return array The first errors. The array keys are the attribute names, and the array values are the
      * corresponding error messages. An empty array will be returned if there is no error.
+     *
+     * @phpstan-return array<string, string>
      */
     private function getFirsts(): array
     {
-        if ($this->errors === []) {
-            return [];
-        }
-
         $errors = [];
 
         /**
-         * @psalm-var string $name
-         * @psalm-var array<string> $es
+         * @phpstan-var string $name
+         * @phpstan-var array<int, string> $es
          */
         foreach ($this->errors as $name => $es) {
-            if (!empty($es)) {
+            if ($es !== []) {
                 $errors[$name] = reset($es);
             }
         }
@@ -213,6 +211,8 @@ final class FieldError
      *
      * @return array The first error of every property in the collection.
      * Empty array is returned if no error.
+     *
+     * @phpstan-return array<int|string, string>
      */
     private function getSummaryFirst(): array
     {
@@ -224,14 +224,23 @@ final class FieldError
      *
      * @return array The errors for all properties as a two-dimensional array.
      * Empty array is returned if no error.
+     *
+     * @phpstan-param array<int, array<int|string, string>>|array<string, array<int, string>> $errors
+     * @phpstan-return array<int|string, string>
      */
     private function renderSummary(array $errors): array
     {
         $lines = [];
 
-        /** @psalm-var array $error */
+        /** @phpstan-var array<int|string, string> $error */
         foreach ($errors as $error) {
-            $lines = [...$lines, ...$error];
+            foreach ($error as $key => $line) {
+                if (is_int($key)) {
+                    $lines[] = $line;
+                } else {
+                    $lines[$key] = $line;
+                }
+            }
         }
 
         return $lines;

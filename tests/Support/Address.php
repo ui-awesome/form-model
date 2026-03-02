@@ -8,16 +8,19 @@ use UIAwesome\FormModel\AbstractFormModel;
 
 final class Address extends AbstractFormModel
 {
-    public string $street = '';
     public string $city = '';
     public Country $country;
+    public string $street = '';
 
     public function __construct(private readonly object|null $object = null)
     {
         $this->country = new Country($object);
     }
 
-    public function __debugInfo()
+    /**
+     * @return array<string, mixed>
+     */
+    public function __debugInfo(): array
     {
         return [
             'street' => $this->street,
@@ -50,6 +53,9 @@ final class Address extends AbstractFormModel
         ];
     }
 
+    /**
+     * @phpstan-return array<string, array<int, mixed>>
+     */
     public function getRules(): array
     {
         return [
@@ -57,7 +63,10 @@ final class Address extends AbstractFormModel
         ];
     }
 
-    public function getWidgetConfigByProperties(): array
+    /**
+     * @phpstan-return array<string, array<string, array<int, string>>>
+     */
+    public function getFieldConfigByProperties(): array
     {
         return [
             'street' => [

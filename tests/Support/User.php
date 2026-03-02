@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace UIAwesome\FormModel\Tests\Support;
 
-use stdClass;
 use UIAwesome\FormModel\AbstractFormModel;
 
 final class User extends AbstractFormModel
 {
-    public string $name;
+    public string $name = '';
     public Profile $profile;
 
     public function __construct(private readonly object|null $object = null)
@@ -17,9 +16,13 @@ final class User extends AbstractFormModel
         $this->profile = new Profile($object);
     }
 
-    public function __debugInfo()
+    /**
+     * @return array<string, mixed>
+     */
+    public function __debugInfo(): array
     {
         return [
+            'name' => $this->name,
             'profile' => $this->profile,
         ];
     }
@@ -45,6 +48,9 @@ final class User extends AbstractFormModel
         ];
     }
 
+    /**
+     * @phpstan-return array<string, array<int, mixed>>
+     */
     public function getRules(): array
     {
         return [
@@ -52,16 +58,10 @@ final class User extends AbstractFormModel
         ];
     }
 
-    public function getWidgetConfig(): array
-    {
-        return [
-            stdClass::class => [
-                'class()' => ['text-gray-100 dark:text-gray-100'],
-            ],
-        ];
-    }
-
-    public function getWidgetConfigByProperties(): array
+    /**
+     * @phpstan-return array<string, array<string, array<int, string>>>
+     */
+    public function getFieldConfigByProperties(): array
     {
         return [
             'name' => [
