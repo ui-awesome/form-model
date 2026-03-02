@@ -13,8 +13,8 @@ use function reset;
  */
 final class FieldError
 {
-    /** 
-     * @phpstan-var array<string, array<int, string>> 
+    /**
+     * @phpstan-var array<string, array<int, string>>
      */
     private array $errors = [];
 
