@@ -18,7 +18,7 @@ use function trim;
  * Usage example:
  * ```php
  * $metadata = new FieldMetadata($form);
- * $emailLabel = $metadata->get('getLabels', 'getLabelByProperty', 'email');
+ * $emailLabel = $metadata->get('getLabels', 'getLabel', 'email');
  * ```
  *
  * @copyright Copyright (C) 2024 Terabytesoftw.
@@ -36,8 +36,8 @@ final class FieldMetadata
      *
      * Usage example:
      * ```php
-     * $label = $metadata->get('getLabels', 'getLabelByProperty', 'email');
-     * $nestedLabel = $metadata->get('getLabels', 'getLabelByProperty', 'profile.email');
+     * $label = $metadata->get('getLabels', 'getLabel', 'email');
+     * $nestedLabel = $metadata->get('getLabels', 'getLabel', 'profile.email');
      * ```
      *
      * @param string $method Method used to retrieve top-level metadata maps.
@@ -76,7 +76,7 @@ final class FieldMetadata
             'getLabels' => $this->formModel->getLabels(),
             'getPlaceholders' => $this->formModel->getPlaceholders(),
             'getRules' => $this->formModel->getRules(),
-            'getFieldConfigByProperties' => $this->formModel->getFieldConfigByProperties(),
+            'getFieldConfigs' => $this->formModel->getFieldConfigs(),
             default => throw new InvalidArgumentException("Unknown metadata method: {$method}."),
         };
 
@@ -131,18 +131,18 @@ final class FieldMetadata
         string $nested,
         array|string $defaultValue,
     ): mixed {
-        $nestedValue = $this->formModel->getPropertyValue($property);
+        $nestedValue = $this->formModel->getValue($property);
 
         if (!$nestedValue instanceof FormModelInterface) {
             return $defaultValue;
         }
 
         return match ($methodNested) {
-            'getHintByProperty' => $nestedValue->getHintByProperty($nested),
-            'getLabelByProperty' => $nestedValue->getLabelByProperty($nested),
-            'getPlaceholderByProperty' => $nestedValue->getPlaceholderByProperty($nested),
-            'getRulesByProperty' => $nestedValue->getRulesByProperty($nested),
-            'getFieldConfigByProperty' => $nestedValue->getFieldConfigByProperty($nested),
+            'getHint' => $nestedValue->getHint($nested),
+            'getLabel' => $nestedValue->getLabel($nested),
+            'getPlaceholder' => $nestedValue->getPlaceholder($nested),
+            'getRule' => $nestedValue->getRule($nested),
+            'getFieldConfig' => $nestedValue->getFieldConfig($nested),
             default => throw new InvalidArgumentException("Unknown nested metadata method: {$methodNested}."),
         };
     }

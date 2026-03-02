@@ -54,7 +54,7 @@ final class SignInForm extends AbstractFormModel
         ];
     }
 
-    public function getFieldConfigByProperties(): array
+    public function getFieldConfigs(): array
     {
         return [
             'email' => [
@@ -67,16 +67,16 @@ final class SignInForm extends AbstractFormModel
 
 ## Metadata access behavior
 
-- `getHintByProperty()`, `getLabelByProperty()`, and `getPlaceholderByProperty()` resolve values from their map methods.
+- `getHint()`, `getLabel()`, and `getPlaceholder()` resolve values from their map methods.
 - Missing labels fall back to generated title-case labels.
-- `getRulesByProperty()` returns property rules or `null` when no rules exist.
-- `getFieldConfigByProperty()` returns field configuration for a single property.
+- `getRule()` returns property rules or `null` when no rules exist.
+- `getFieldConfig()` returns field configuration for a single property.
 
 ```php
-$label = $form->getLabelByProperty('email');
-$placeholder = $form->getPlaceholderByProperty('email');
-$rules = $form->getRulesByProperty('email');
-$fieldConfig = $form->getFieldConfigByProperty('email');
+$label = $form->getLabel('email');
+$placeholder = $form->getPlaceholder('email');
+$rules = $form->getRule('email');
+$fieldConfig = $form->getFieldConfig('email');
 ```
 
 ## Nested metadata
@@ -85,27 +85,27 @@ $fieldConfig = $form->getFieldConfigByProperty('email');
 - Nested paths work for hints, labels, placeholders, rules, and field configuration.
 
 ```php
-$hint = $form->getHintByProperty('profile.address.city');
-$label = $form->getLabelByProperty('profile.address.city');
-$rules = $form->getRulesByProperty('profile.address.city');
+$hint = $form->getHint('profile.address.city');
+$label = $form->getLabel('profile.address.city');
+$rules = $form->getRule('profile.address.city');
 ```
 
 ## Error lifecycle
 
-- `addPropertyError()` appends a message to one property.
+- `addError()` appends a message to one property.
 - `setErrors()` replaces all property error collections.
 - `clearError()` clears all errors or one property.
-- `getErrors(first: true)` returns the first error per property.
+- `getFirstErrors()` returns the first error per property.
 - `getErrorSummary()` flattens all messages for rendering.
-- `hasPropertyError()` and `hasPropertyValidate()` report current error state.
+- `hasError()` and `isValidated()` report current error state.
 
 ```php
-$form->addPropertyError('email', 'Email is required.');
+$form->addError('email', 'Email is required.');
 
 $errors = $form->getErrors();
 // ['email' => ['Email is required.']]
 
-$firstErrors = $form->getErrors(first: true);
+$firstErrors = $form->getFirstErrors();
 // ['email' => 'Email is required.']
 
 $summary = $form->getErrorSummary();

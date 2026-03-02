@@ -23,7 +23,7 @@ use UIAwesome\FormModel\Tests\Support\User;
  */
 final class FieldNestedTest extends TestCase
 {
-    public function testGetFieldConfigByPropertySeveralNestedLevels(): void
+    public function testGetFieldConfigSeveralNestedLevels(): void
     {
         $fieldModel = new User();
 
@@ -31,187 +31,187 @@ final class FieldNestedTest extends TestCase
             [
                 'class()' => ['text-gray-100 dark:text-gray-100'],
             ],
-            $fieldModel->getFieldConfigByProperty('name'),
+            $fieldModel->getFieldConfig('name'),
             'Should return field configuration for the root property.',
         );
         self::assertSame(
             [
                 'class()' => ['text-green-100 dark:text-green-100'],
             ],
-            $fieldModel->getFieldConfigByProperty('profile.bio'),
+            $fieldModel->getFieldConfig('profile.bio'),
             'Should return field configuration for the nested profile property.',
         );
         self::assertSame(
             [
                 'class()' => ['text-blue-100 dark:text-blue-100'],
             ],
-            $fieldModel->getFieldConfigByProperty('profile.address.street'),
+            $fieldModel->getFieldConfig('profile.address.street'),
             'Should return field configuration for the deeply nested street property.',
         );
         self::assertSame(
             [
                 'class()' => ['text-red-100 dark:text-red-100'],
             ],
-            $fieldModel->getFieldConfigByProperty('profile.address.city'),
+            $fieldModel->getFieldConfig('profile.address.city'),
             'Should return field configuration for the deeply nested city property.',
         );
     }
 
-    public function testGetHintByPropertyAcrossSeveralNestedLevels(): void
+    public function testGetHintAcrossSeveralNestedLevels(): void
     {
         $fieldModel = new User();
 
         self::assertSame(
             'Enter your name',
-            $fieldModel->getHintByProperty('name'),
+            $fieldModel->getHint('name'),
             'Should return the root hint value.',
         );
         self::assertSame(
             'Enter your bio',
-            $fieldModel->getHintByProperty('profile.bio'),
+            $fieldModel->getHint('profile.bio'),
             'Should return the nested profile hint value.',
         );
         self::assertSame(
             'Enter street name',
-            $fieldModel->getHintByProperty('profile.address.street'),
+            $fieldModel->getHint('profile.address.street'),
             'Should return the deeply nested street hint value.',
         );
         self::assertSame(
             'Enter city name',
-            $fieldModel->getHintByProperty('profile.address.city'),
+            $fieldModel->getHint('profile.address.city'),
             'Should return the deeply nested city hint value.',
         );
         self::assertSame(
             'Enter country name',
-            $fieldModel->getHintByProperty('profile.address.country.name'),
+            $fieldModel->getHint('profile.address.country.name'),
             'Should return the deeply nested country hint value.',
         );
     }
 
-    public function testGetHintByPropertyRejectsLeadingDotNestedProperty(): void
+    public function testGetHintRejectsLeadingDotNestedProperty(): void
     {
         $fieldModel = new User();
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid nested property format: .profile.');
 
-        $fieldModel->getHintByProperty('.profile');
+        $fieldModel->getHint('.profile');
     }
 
-    public function testGetHintByPropertyRejectsTrailingDotNestedProperty(): void
+    public function testGetHintRejectsTrailingDotNestedProperty(): void
     {
         $fieldModel = new User();
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid nested property format: profile..');
 
-        $fieldModel->getHintByProperty('profile.');
+        $fieldModel->getHint('profile.');
     }
 
-    public function testGetHintByPropertyRejectsWhitespaceOnlyNestedSegment(): void
+    public function testGetHintRejectsWhitespaceOnlyNestedSegment(): void
     {
         $fieldModel = new User();
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid nested property format: profile.   .');
 
-        $fieldModel->getHintByProperty('profile.   ');
+        $fieldModel->getHint('profile.   ');
     }
 
-    public function testGetHintByPropertyRejectsWhitespaceOnlyParentSegment(): void
+    public function testGetHintRejectsWhitespaceOnlyParentSegment(): void
     {
         $fieldModel = new User();
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid nested property format:    .profile.');
 
-        $fieldModel->getHintByProperty('   .profile');
+        $fieldModel->getHint('   .profile');
     }
 
-    public function testGetLabelByPropertyAcrossSeveralNestedLevels(): void
+    public function testGetLabelAcrossSeveralNestedLevels(): void
     {
         $fieldModel = new User();
 
         self::assertSame(
             'Name',
-            $fieldModel->getLabelByProperty('name'),
+            $fieldModel->getLabel('name'),
             'Should return the root label value.',
         );
         self::assertSame(
             'Bio',
-            $fieldModel->getLabelByProperty('profile.bio'),
+            $fieldModel->getLabel('profile.bio'),
             'Should return the nested profile label value.',
         );
         self::assertSame(
             'Street',
-            $fieldModel->getLabelByProperty('profile.address.street'),
+            $fieldModel->getLabel('profile.address.street'),
             'Should return the deeply nested street label value.',
         );
         self::assertSame(
             'City',
-            $fieldModel->getLabelByProperty('profile.address.city'),
+            $fieldModel->getLabel('profile.address.city'),
             'Should return the deeply nested city label value.',
         );
         self::assertSame(
             'Country',
-            $fieldModel->getLabelByProperty('profile.address.country.name'),
+            $fieldModel->getLabel('profile.address.country.name'),
             'Should return the deeply nested country label value.',
         );
     }
 
-    public function testGetPlaceholderByPropertyAcrossSeveralNestedLevels(): void
+    public function testGetPlaceholderAcrossSeveralNestedLevels(): void
     {
         $fieldModel = new User();
 
         self::assertSame(
             'Enter your name',
-            $fieldModel->getPlaceholderByProperty('name'),
+            $fieldModel->getPlaceholder('name'),
             'Should return the root placeholder value.',
         );
         self::assertSame(
             'Enter your bio',
-            $fieldModel->getPlaceholderByProperty('profile.bio'),
+            $fieldModel->getPlaceholder('profile.bio'),
             'Should return the nested profile placeholder value.',
         );
         self::assertSame(
             'Enter street name',
-            $fieldModel->getPlaceholderByProperty('profile.address.street'),
+            $fieldModel->getPlaceholder('profile.address.street'),
             'Should return the deeply nested street placeholder value.',
         );
         self::assertSame(
             'Enter city name',
-            $fieldModel->getPlaceholderByProperty('profile.address.city'),
+            $fieldModel->getPlaceholder('profile.address.city'),
             'Should return the deeply nested city placeholder value.',
         );
         self::assertSame(
             'Enter country name',
-            $fieldModel->getPlaceholderByProperty('profile.address.country.name'),
+            $fieldModel->getPlaceholder('profile.address.country.name'),
             'Should return the deeply nested country placeholder value.',
         );
     }
 
-    public function testGetRulesByPropertyAcrossSeveralNestedLevels(): void
+    public function testGetRuleAcrossSeveralNestedLevels(): void
     {
         $validatorObject = new stdClass();
         $fieldModel = new User($validatorObject);
 
         self::assertSame(
             [$validatorObject],
-            $fieldModel->getRulesByProperty('name'),
+            $fieldModel->getRule('name'),
             'Should return validators for the root property.',
         );
         self::assertNull(
-            $fieldModel->getRulesByProperty('profile.address.city'),
+            $fieldModel->getRule('profile.address.city'),
             'Should return null when no validators are configured for the nested property.',
         );
         self::assertSame(
             [$validatorObject],
-            $fieldModel->getRulesByProperty('profile.bio'),
+            $fieldModel->getRule('profile.bio'),
             'Should return validators for the nested profile property.',
         );
         self::assertSame(
             [$validatorObject],
-            $fieldModel->getRulesByProperty('profile.address.street'),
+            $fieldModel->getRule('profile.address.street'),
             'Should return validators for the deeply nested street property.',
         );
     }

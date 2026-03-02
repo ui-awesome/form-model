@@ -17,7 +17,7 @@ use UIAwesome\Model\ModelInterface;
  * }
  *
  * $form = new UserForm();
- * $form->addPropertyError('email', 'Email is invalid.');
+ * $form->addError('email', 'Email is invalid.');
  * ```
  *
  * @copyright Copyright (C) 2024 Terabytesoftw.
@@ -26,17 +26,17 @@ use UIAwesome\Model\ModelInterface;
 interface FormModelInterface extends ModelInterface
 {
     /**
-     * Adds an error for a property.
+     * Adds an error for a field.
      *
      * Usage example:
      * ```php
-     * $form->addPropertyError('email', 'Email is invalid.');
+     * $form->addError('email', 'Email is invalid.');
      * ```
      *
-     * @param string $property Property name.
+     * @param string $field Field name.
      * @param string $error Error message to append.
      */
-    public function addPropertyError(string $property, string $error): void;
+    public function addError(string $field, string $error): void;
 
     /**
      * Clears errors for one property or all properties.
@@ -52,21 +52,32 @@ interface FormModelInterface extends ModelInterface
     public function clearError(string|null $property = null): void;
 
     /**
-     * Returns validation errors indexed by property name.
+     * Returns validation errors indexed by field name.
      *
      * Usage example:
      * ```php
      * $allErrors = $form->getErrors();
-     * $firstErrors = $form->getErrors(true);
      * ```
      *
-     * @param bool $first Whether to return only the first error of each property.
+     * @return array Errors indexed by field name. Returns an empty array when no errors exist.
      *
-     * @return array Errors indexed by property name. Returns an empty array when no errors exist.
-     *
-     * @phpstan-return array<string, array<int, string>|string>
+     * @phpstan-return array<string, array<int, string>>
      */
-    public function getErrors(bool $first = false): array;
+    public function getErrors(): array;
+
+    /**
+     * Returns the first validation error indexed by field name.
+     *
+     * Usage example:
+     * ```php
+     * $firstErrors = $form->getFirstErrors();
+     * ```
+     *
+     * @return array First errors indexed by field name. Returns an empty array when no errors exist.
+     *
+     * @phpstan-return array<string, string>
+     */
+    public function getFirstErrors(): array;
 
     /**
      * Returns a flattened error summary.
@@ -91,44 +102,44 @@ interface FormModelInterface extends ModelInterface
      *
      * Usage example:
      * ```php
-     * $fieldConfig = $form->getFieldConfigByProperties();
+     * $fieldConfig = $form->getFieldConfigs();
      * ```
      *
      * @return array Field configuration arrays indexed by property name.
      *
      * @phpstan-return array<string, array<int|string, mixed>>
      */
-    public function getFieldConfigByProperties(): array;
+    public function getFieldConfigs(): array;
 
     /**
      * Returns the field configuration for one property.
      *
      * Usage example:
      * ```php
-     * $emailFieldConfig = $form->getFieldConfigByProperty('email');
+     * $emailFieldConfig = $form->getFieldConfig('email');
      * ```
      *
-     * @param string $property Property name.
+     * @param string $field Field name.
      *
      * @return array Field configuration for the property.
      *
      * @phpstan-return array<int|string, mixed>
      */
-    public function getFieldConfigByProperty(string $property): array;
+    public function getFieldConfig(string $field): array;
 
     /**
      * Returns the hint text for one property.
      *
      * Usage example:
      * ```php
-     * $hint = $form->getHintByProperty('email');
+     * $hint = $form->getHint('email');
      * ```
      *
-     * @param string $property Property name.
+     * @param string $field Field name.
      *
-     * @return string Hint text for the property.
+     * @return string Hint text for the field.
      */
-    public function getHintByProperty(string $property): string;
+    public function getHint(string $field): string;
 
     /**
      * Returns hint text indexed by property name.
@@ -147,14 +158,14 @@ interface FormModelInterface extends ModelInterface
      *
      * Usage example:
      * ```php
-     * $label = $form->getLabelByProperty('email');
+     * $label = $form->getLabel('email');
      * ```
      *
-     * @param string $property Property name.
+     * @param string $field Field name.
      *
-     * @return string Label text for the property.
+     * @return string Label text for the field.
      */
-    public function getLabelByProperty(string $property): string;
+    public function getLabel(string $field): string;
 
     /**
      * Returns label text indexed by property name.
@@ -173,14 +184,14 @@ interface FormModelInterface extends ModelInterface
      *
      * Usage example:
      * ```php
-     * $placeholder = $form->getPlaceholderByProperty('email');
+     * $placeholder = $form->getPlaceholder('email');
      * ```
      *
-     * @param string $property Property name.
+     * @param string $field Field name.
      *
-     * @return string Placeholder text for the property.
+     * @return string Placeholder text for the field.
      */
-    public function getPlaceholderByProperty(string $property): string;
+    public function getPlaceholder(string $field): string;
 
     /**
      * Returns placeholder text indexed by property name.
@@ -195,22 +206,34 @@ interface FormModelInterface extends ModelInterface
     public function getPlaceholders(): array;
 
     /**
-     * Returns errors for one property.
+     * Returns errors for one field.
      *
      * Usage example:
      * ```php
-     * $errors = $form->getPropertyError('email');
-     * $firstError = $form->getPropertyError('email', true);
+     * $errors = $form->getError('email');
      * ```
      *
-     * @param string $property Property name.
-     * @param bool $first Whether to return only the first error of the specified property.
+     * @param string $field Field name.
      *
-     * @return array|string Error list for the property, or the first error when `$first` is `true`.
+     * @return array Error list for the field.
      *
-     * @phpstan-return array<int, string>|string
+     * @phpstan-return array<int, string>
      */
-    public function getPropertyError(string $property, bool $first = false): array|string;
+    public function getError(string $field): array;
+
+    /**
+     * Returns the first error for one field.
+     *
+     * Usage example:
+     * ```php
+     * $firstError = $form->getFirstError('email');
+     * ```
+     *
+     * @param string $field Field name.
+     *
+     * @return string First error for the field, or an empty string when no errors exist.
+     */
+    public function getFirstError(string $field): string;
 
     /**
      * Returns validation rules indexed by property name.
@@ -231,45 +254,45 @@ interface FormModelInterface extends ModelInterface
      *
      * Usage example:
      * ```php
-     * $emailRules = $form->getRulesByProperty('email');
+     * $emailRules = $form->getRule('email');
      * ```
      *
-     * @param string $property Property name.
+     * @param string $field Field name.
      *
-     * @return array|null Validation rules for the property, or `null` when no rules are defined.
+     * @return array|null Validation rules for the field, or `null` when no rules are defined.
      *
      * @phpstan-return array<mixed, mixed>|null
      */
-    public function getRulesByProperty(string $property): array|null;
+    public function getRule(string $field): array|null;
 
     /**
      * Checks whether errors exist.
      *
      * Usage example:
      * ```php
-     * $hasAnyError = $form->hasPropertyError();
-     * $hasEmailError = $form->hasPropertyError('email');
+     * $hasAnyError = $form->hasError();
+     * $hasEmailError = $form->hasError('email');
      * ```
      *
-     * @param string|null $property Property name, or `null` to check all properties.
+     * @param string|null $field Field name, or `null` to check all fields.
      *
      * @return bool `true` if errors exist, otherwise `false`.
      */
-    public function hasPropertyError(string|null $property = null): bool;
+    public function hasError(string|null $field = null): bool;
 
     /**
-     * Checks whether a property has been validated successfully.
+     * Checks whether a field has been validated successfully.
      *
      * Usage example:
      * ```php
-     * $isValid = $form->hasPropertyValidate('email');
+     * $isValid = $form->isValidated('email');
      * ```
      *
-     * @param string $property Property name.
+     * @param string $field Field name.
      *
-     * @return bool `true` if the property exists in the error map with no messages, otherwise `false`.
+     * @return bool `true` if the field exists in the error map with no messages, otherwise `false`.
      */
-    public function hasPropertyValidate(string $property): bool;
+    public function isValidated(string $field): bool;
 
     /**
      * Replaces all property errors.

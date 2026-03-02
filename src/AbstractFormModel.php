@@ -18,7 +18,7 @@ use UIAwesome\Model\AbstractModel;
  * }
  *
  * $form = new UserForm();
- * $form->addPropertyError('email', 'Email is invalid.');
+ * $form->addError('email', 'Email is invalid.');
  * ```
  *
  * @copyright Copyright (C) 2024 Terabytesoftw.
@@ -36,9 +36,9 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
      */
     private FieldMetadata|null $fieldMetadata = null;
 
-    public function addPropertyError(string $property, string $error): void
+    public function addError(string $field, string $error): void
     {
-        $this->error()->add($property, $error);
+        $this->error()->add($field, $error);
     }
 
     public function clearError(string|null $property = null): void
@@ -47,11 +47,25 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
     }
 
     /**
-     * @phpstan-return array<string, array<int, string>|string>
+     * @phpstan-return array<string, array<int, string>>
      */
-    public function getErrors(bool $first = false): array
+    public function getErrors(): array
     {
-        return $this->error()->get($first);
+        /** @phpstan-var array<string, array<int, string>> $errors */
+        $errors = $this->error()->get();
+
+        return $errors;
+    }
+
+    /**
+     * @phpstan-return array<string, string>
+     */
+    public function getFirstErrors(): array
+    {
+        /** @phpstan-var array<string, string> $errors */
+        $errors = $this->error()->get(true);
+
+        return $errors;
     }
 
     /**
@@ -63,7 +77,7 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
         return $this->error()->getSummary($onlyProperties, $first);
     }
 
-    public function getFieldConfigByProperties(): array
+    public function getFieldConfigs(): array
     {
         return [];
     }
@@ -71,23 +85,23 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
     /**
      * @phpstan-return array<int|string, mixed>
      */
-    public function getFieldConfigByProperty(string $property): array
+    public function getFieldConfig(string $field): array
     {
-        $fieldConfigByProperty = $this->metadata()->get(
-            'getFieldConfigByProperties',
-            'getFieldConfigByProperty',
-            $property,
+        $fieldConfig = $this->metadata()->get(
+            'getFieldConfigs',
+            'getFieldConfig',
+            $field,
             [],
         );
 
-        return is_array($fieldConfigByProperty) ? $fieldConfigByProperty : [];
+        return is_array($fieldConfig) ? $fieldConfig : [];
     }
 
-    public function getHintByProperty(string $property): string
+    public function getHint(string $field): string
     {
-        $hintByProperty = $this->metadata()->get('getHints', 'getHintByProperty', $property);
+        $hint = $this->metadata()->get('getHints', 'getHint', $field);
 
-        return is_string($hintByProperty) ? $hintByProperty : '';
+        return is_string($hint) ? $hint : '';
     }
 
     public function getHints(): array
@@ -95,12 +109,12 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
         return [];
     }
 
-    public function getLabelByProperty(string $property): string
+    public function getLabel(string $field): string
     {
-        $generateLabel = WordCaseConverter::toTitleWords($property);
-        $labelByProperty = $this->metadata()->get('getLabels', 'getLabelByProperty', $property, $generateLabel);
+        $generateLabel = WordCaseConverter::toTitleWords($field);
+        $label = $this->metadata()->get('getLabels', 'getLabel', $field, $generateLabel);
 
-        return is_string($labelByProperty) ? $labelByProperty : '';
+        return is_string($label) ? $label : '';
     }
 
     public function getLabels(): array
@@ -108,11 +122,11 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
         return [];
     }
 
-    public function getPlaceholderByProperty(string $property): string
+    public function getPlaceholder(string $field): string
     {
-        $placeholderByProperty = $this->metadata()->get('getPlaceholders', 'getPlaceholderByProperty', $property);
+        $placeholder = $this->metadata()->get('getPlaceholders', 'getPlaceholder', $field);
 
-        return is_string($placeholderByProperty) ? $placeholderByProperty : '';
+        return is_string($placeholder) ? $placeholder : '';
     }
 
     public function getPlaceholders(): array
@@ -120,9 +134,20 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
         return [];
     }
 
-    public function getPropertyError(string $property, bool $first = false): array|string
+    public function getError(string $field): array
     {
-        return $this->error()->getProperty($property, $first);
+        /** @phpstan-var array<int, string> $errors */
+        $errors = $this->error()->getProperty($field);
+
+        return $errors;
+    }
+
+    public function getFirstError(string $field): string
+    {
+        /** @phpstan-var string $error */
+        $error = $this->error()->getProperty($field, true);
+
+        return $error;
     }
 
     /**
@@ -136,21 +161,21 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
     /**
      * @phpstan-return array<mixed, mixed>|null
      */
-    public function getRulesByProperty(string $property): array|null
+    public function getRule(string $field): array|null
     {
-        $ruleByProperty = $this->metadata()->get('getRules', 'getRulesByProperty', $property);
+        $rule = $this->metadata()->get('getRules', 'getRule', $field);
 
-        return is_array($ruleByProperty) ? $ruleByProperty : null;
+        return is_array($rule) ? $rule : null;
     }
 
-    public function hasPropertyError(string|null $property = null): bool
+    public function hasError(string|null $field = null): bool
     {
-        return $this->error()->has($property);
+        return $this->error()->has($field);
     }
 
-    public function hasPropertyValidate(string $property): bool
+    public function isValidated(string $field): bool
     {
-        return $this->error()->hasValidate($property);
+        return $this->error()->hasValidate($field);
     }
 
     public function setErrors(array $values): void

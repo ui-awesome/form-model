@@ -86,7 +86,7 @@ final class SignInForm extends AbstractFormModel
         ];
     }
 
-    public function getFieldConfigByProperties(): array
+    public function getFieldConfigs(): array
     {
         return [
             'email' => [
@@ -98,7 +98,7 @@ final class SignInForm extends AbstractFormModel
 
 $form = new SignInForm();
 
-$form->addPropertyError('email', 'Email is required.');
+$form->addError('email', 'Email is required.');
 
 $errors = $form->getErrors();
 /*
@@ -110,7 +110,7 @@ $errors = $form->getErrors();
 $summary = $form->getErrorSummary();
 // ['Email is required.']
 
-$label = $form->getLabelByProperty('email');
+$label = $form->getLabel('email');
 // 'Email address'
 ```
 
@@ -119,10 +119,10 @@ $label = $form->getLabelByProperty('email');
 You can request metadata using dot notation when a property contains another `AbstractFormModel`.
 
 ```php
-$hint = $form->getHintByProperty('profile.address.city');
-$label = $form->getLabelByProperty('profile.address.city');
-$placeholder = $form->getPlaceholderByProperty('profile.address.city');
-$rules = $form->getRulesByProperty('profile.address.city');
+$hint = $form->getHint('profile.address.city');
+$label = $form->getLabel('profile.address.city');
+$placeholder = $form->getPlaceholder('profile.address.city');
+$rules = $form->getRule('profile.address.city');
 ```
 
 ## Error collection and first-error mode
@@ -135,7 +135,7 @@ $form->setErrors([
     'password' => ['Password is required.'],
 ]);
 
-$firstErrors = $form->getErrors(first: true);
+$firstErrors = $form->getFirstErrors();
 /*
 [
     'email' => 'Email is required.',
@@ -148,12 +148,12 @@ $firstErrors = $form->getErrors(first: true);
 
 For setup details and advanced usage.
 
-- [Installation guide](docs/installation.md)
-- [Configuration reference](docs/configuration.md)
-- [Usage examples](docs/examples.md)
-- [Testing guide](docs/testing.md)
-- [Development guide](docs/development.md)
-- [Upgrade guide](UPGRADE.md)
+- 📚 [Installation Guide](docs/installation.md)
+- ⚙️ [Configuration Reference](docs/configuration.md)
+- 💡 [Usage Examples](docs/examples.md)
+- 🧪 [Testing Guide](docs/testing.md)
+- 🛠️ [Development Guide](docs/development.md)
+- 🔄 [Upgrade Guide](UPGRADE.md)
 
 ## Package information
 
