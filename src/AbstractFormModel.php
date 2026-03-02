@@ -52,9 +52,7 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
     public function getErrors(): array
     {
         /** @phpstan-var array<string, array<int, string>> $errors */
-        $errors = $this->error()->get();
-
-        return $errors;
+        return $this->error()->get();
     }
 
     /**
@@ -63,9 +61,7 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
     public function getFirstErrors(): array
     {
         /** @phpstan-var array<string, string> $errors */
-        $errors = $this->error()->get(true);
-
-        return $errors;
+        return $this->error()->get(true);
     }
 
     /**
@@ -137,17 +133,13 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
     public function getError(string $field): array
     {
         /** @phpstan-var array<int, string> $errors */
-        $errors = $this->error()->getProperty($field);
-
-        return $errors;
+        return $this->error()->getProperty($field);
     }
 
     public function getFirstError(string $field): string
     {
         /** @phpstan-var string $error */
-        $error = $this->error()->getProperty($field, true);
-
-        return $error;
+        return $this->error()->getProperty($field, true);
     }
 
     /**
