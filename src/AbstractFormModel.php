@@ -7,9 +7,33 @@ namespace UIAwesome\FormModel;
 use PHPForge\Helper\WordCaseConverter;
 use UIAwesome\Model\AbstractModel;
 
+/**
+ * Base implementation of {@see FormModelInterface}.
+ *
+ * Usage example:
+ * ```php
+ * final class UserForm extends AbstractFormModel
+ * {
+ *     public string $email = '';
+ * }
+ *
+ * $form = new UserForm();
+ * $form->addPropertyError('email', 'Email is invalid.');
+ * ```
+ *
+ * @copyright Copyright (C) 2024 Terabytesoftw.
+ * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
+ */
 abstract class AbstractFormModel extends AbstractModel implements FormModelInterface
 {
+    /**
+     * Lazily initialized property-error storage.
+     */
     private FieldError|null $fieldError = null;
+
+    /**
+     * Lazily initialized field-metadata resolver.
+     */
     private FieldMetadata|null $fieldMetadata = null;
 
     public function addPropertyError(string $property, string $error): void
@@ -137,6 +161,11 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
         $this->error()->set($values);
     }
 
+    /**
+     * Returns the lazily initialized field error storage.
+     *
+     * @return FieldError Field error storage instance.
+     */
     private function error(): FieldError
     {
         if ($this->fieldError === null) {
@@ -146,6 +175,11 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
         return $this->fieldError;
     }
 
+    /**
+     * Returns the lazily initialized metadata resolver.
+     *
+     * @return FieldMetadata Metadata resolver instance.
+     */
     private function metadata(): FieldMetadata
     {
         if ($this->fieldMetadata === null) {
