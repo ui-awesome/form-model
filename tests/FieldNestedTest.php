@@ -87,6 +87,7 @@ final class FieldNestedTest extends TestCase
             'Should return the deeply nested country hint value.',
         );
     }
+
     public function testGetHintByPropertyRejectsLeadingDotNestedProperty(): void
     {
         $fieldModel = new User();
