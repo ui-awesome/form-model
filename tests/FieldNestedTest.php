@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UIAwesome\FormModel\Tests;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use UIAwesome\FormModel\Tests\Support\User;
@@ -12,6 +13,7 @@ use UIAwesome\FormModel\Tests\Support\User;
  * Unit tests for resolving nested field metadata and rules on composed form models.
  *
  * Test coverage.
+ * - Rejects malformed nested property strings containing empty path segments.
  * - Resolves rules for nested properties, including nullable rule responses.
  * - Returns hints, labels, and placeholders for root and deeply nested property paths.
  * - Returns nested field configuration arrays for supported property paths.
@@ -21,6 +23,40 @@ use UIAwesome\FormModel\Tests\Support\User;
  */
 final class FieldNestedTest extends TestCase
 {
+    public function testGetFieldConfigByPropertySeveralNestedLevels(): void
+    {
+        $fieldModel = new User();
+
+        self::assertSame(
+            [
+                'class()' => ['text-gray-100 dark:text-gray-100'],
+            ],
+            $fieldModel->getFieldConfigByProperty('name'),
+            'Should return field configuration for the root property.',
+        );
+        self::assertSame(
+            [
+                'class()' => ['text-green-100 dark:text-green-100'],
+            ],
+            $fieldModel->getFieldConfigByProperty('profile.bio'),
+            'Should return field configuration for the nested profile property.',
+        );
+        self::assertSame(
+            [
+                'class()' => ['text-blue-100 dark:text-blue-100'],
+            ],
+            $fieldModel->getFieldConfigByProperty('profile.address.street'),
+            'Should return field configuration for the deeply nested street property.',
+        );
+        self::assertSame(
+            [
+                'class()' => ['text-red-100 dark:text-red-100'],
+            ],
+            $fieldModel->getFieldConfigByProperty('profile.address.city'),
+            'Should return field configuration for the deeply nested city property.',
+        );
+    }
+
     public function testGetHintByPropertyAcrossSeveralNestedLevels(): void
     {
         $fieldModel = new User();
@@ -50,6 +86,45 @@ final class FieldNestedTest extends TestCase
             $fieldModel->getHintByProperty('profile.address.country.name'),
             'Should return the deeply nested country hint value.',
         );
+    }
+    public function testGetHintByPropertyRejectsLeadingDotNestedProperty(): void
+    {
+        $fieldModel = new User();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid nested property format: .profile.');
+
+        $fieldModel->getHintByProperty('.profile');
+    }
+
+    public function testGetHintByPropertyRejectsTrailingDotNestedProperty(): void
+    {
+        $fieldModel = new User();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid nested property format: profile..');
+
+        $fieldModel->getHintByProperty('profile.');
+    }
+
+    public function testGetHintByPropertyRejectsWhitespaceOnlyNestedSegment(): void
+    {
+        $fieldModel = new User();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid nested property format: profile.   .');
+
+        $fieldModel->getHintByProperty('profile.   ');
+    }
+
+    public function testGetHintByPropertyRejectsWhitespaceOnlyParentSegment(): void
+    {
+        $fieldModel = new User();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid nested property format:    .profile.');
+
+        $fieldModel->getHintByProperty('   .profile');
     }
 
     public function testGetLabelByPropertyAcrossSeveralNestedLevels(): void
@@ -137,40 +212,6 @@ final class FieldNestedTest extends TestCase
             [$validatorObject],
             $fieldModel->getRulesByProperty('profile.address.street'),
             'Should return validators for the deeply nested street property.',
-        );
-    }
-
-    public function testGetFieldConfigByPropertySeveralNestedLevels(): void
-    {
-        $fieldModel = new User();
-
-        self::assertSame(
-            [
-                'class()' => ['text-gray-100 dark:text-gray-100'],
-            ],
-            $fieldModel->getFieldConfigByProperty('name'),
-            'Should return field configuration for the root property.',
-        );
-        self::assertSame(
-            [
-                'class()' => ['text-green-100 dark:text-green-100'],
-            ],
-            $fieldModel->getFieldConfigByProperty('profile.bio'),
-            'Should return field configuration for the nested profile property.',
-        );
-        self::assertSame(
-            [
-                'class()' => ['text-blue-100 dark:text-blue-100'],
-            ],
-            $fieldModel->getFieldConfigByProperty('profile.address.street'),
-            'Should return field configuration for the deeply nested street property.',
-        );
-        self::assertSame(
-            [
-                'class()' => ['text-red-100 dark:text-red-100'],
-            ],
-            $fieldModel->getFieldConfigByProperty('profile.address.city'),
-            'Should return field configuration for the deeply nested city property.',
         );
     }
 }

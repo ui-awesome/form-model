@@ -123,20 +123,6 @@ final class FieldErrorTest extends TestCase
         );
     }
 
-    public function testGetWhenEmpty(): void
-    {
-        $fieldError = new FieldError();
-
-        self::assertEmpty(
-            $fieldError->get(),
-            'Should return no errors when none were added.',
-        );
-        self::assertEmpty(
-            $fieldError->get(true),
-            'Should return no first errors when none were added.',
-        );
-    }
-
     public function testGetProperty(): void
     {
         $fieldError = new FieldError();
@@ -241,6 +227,26 @@ final class FieldErrorTest extends TestCase
         );
     }
 
+    public function testGetSummaryWithFirstErrorPerPropertyAndOnlySelectedProperties(): void
+    {
+        $fieldError = new FieldError();
+
+        $fieldError->set(
+            [
+                'username' => ['The field is required', 'Invalid username'],
+                'email' => ['Invalid email', 'The field is required'],
+            ],
+        );
+
+        self::assertSame(
+            [
+                'username' => 'The field is required',
+            ],
+            $fieldError->getSummary(['username'], true),
+            'Should filter first-error summary by selected properties when both options are provided.',
+        );
+    }
+
     public function testGetSummaryWithOnlySelectedProperty(): void
     {
         $fieldError = new FieldError();
@@ -256,6 +262,38 @@ final class FieldErrorTest extends TestCase
             ['Invalid username'],
             $fieldError->getSummary(['username']),
             'Should return summary messages only for the selected properties.',
+        );
+    }
+
+    public function testGetSummaryWithSelectedPropertyAndFirstErrorPerProperty(): void
+    {
+        $fieldError = new FieldError();
+
+        $fieldError->set(
+            [
+                'username' => ['The field is required', 'Invalid username'],
+                'email' => ['Invalid email', 'The field is required'],
+            ],
+        );
+
+        self::assertSame(
+            ['username' => 'The field is required'],
+            $fieldError->getSummary(['username'], true),
+            'Should return first errors only for selected properties.',
+        );
+    }
+
+    public function testGetWhenEmpty(): void
+    {
+        $fieldError = new FieldError();
+
+        self::assertEmpty(
+            $fieldError->get(),
+            'Should return no errors when none were added.',
+        );
+        self::assertEmpty(
+            $fieldError->get(true),
+            'Should return no first errors when none were added.',
         );
     }
 

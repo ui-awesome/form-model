@@ -105,6 +105,26 @@ final class FormModelTest extends TestCase
         );
     }
 
+    public function testGetErrorSummaryWithFirstErrorPerPropertyAndOnlySelectedProperties(): void
+    {
+        $formModel = new Country();
+
+        $formModel->setErrors(
+            [
+                'name' => ['The field is required', 'Invalid name'],
+                'postalCode' => ['Invalid postal code', 'The field is required'],
+            ],
+        );
+
+        self::assertSame(
+            [
+                'name' => 'The field is required',
+            ],
+            $formModel->getErrorSummary(['name'], true),
+            'Should return first-error summary only for selected properties when both options are provided.',
+        );
+    }
+
     public function testGetErrorsWhenEmpty(): void
     {
         $formModel = new class extends AbstractFormModel {};
@@ -130,6 +150,39 @@ final class FormModelTest extends TestCase
             ],
             $formModel->getErrors(first: true),
             'Should return only the first error per property when requested.',
+        );
+    }
+
+    public function testGetFieldConfigByPropertiesWhenEmpty(): void
+    {
+        $formModel = new Country();
+
+        self::assertEmpty(
+            $formModel->getFieldConfigByProperties(),
+            'Should return an empty field configuration map when none are defined.',
+        );
+    }
+
+    public function testGetFieldConfigByProperty(): void
+    {
+        $formModel = new User();
+
+        self::assertSame(
+            [
+                'class()' => ['text-gray-100 dark:text-gray-100'],
+            ],
+            $formModel->getFieldConfigByProperty('name'),
+            'Should return field configuration for the requested property.',
+        );
+    }
+
+    public function testGetFieldConfigByPropertyWhenEmpty(): void
+    {
+        $formModel = new Country();
+
+        self::assertEmpty(
+            $formModel->getFieldConfigByProperty('name'),
+            'Should return an empty configuration when the property has no field config.',
         );
     }
 
@@ -257,39 +310,6 @@ final class FormModelTest extends TestCase
         self::assertEmpty($formModel->getRules(), 'Should return no validation rules when none are declared.');
     }
 
-    public function testGetFieldConfigByProperty(): void
-    {
-        $formModel = new User();
-
-        self::assertSame(
-            [
-                'class()' => ['text-gray-100 dark:text-gray-100'],
-            ],
-            $formModel->getFieldConfigByProperty('name'),
-            'Should return field configuration for the requested property.',
-        );
-    }
-
-    public function testGetFieldConfigByPropertyWhenEmpty(): void
-    {
-        $formModel = new Country();
-
-        self::assertEmpty(
-            $formModel->getFieldConfigByProperty('name'),
-            'Should return an empty configuration when the property has no field config.',
-        );
-    }
-
-    public function testGetFieldConfigByPropertiesWhenEmpty(): void
-    {
-        $formModel = new Country();
-
-        self::assertEmpty(
-            $formModel->getFieldConfigByProperties(),
-            'Should return an empty field configuration map when none are defined.',
-        );
-    }
-
     public function testHasPropertyError(): void
     {
         $formModel = new Country();
@@ -320,7 +340,7 @@ final class FormModelTest extends TestCase
 
         self::assertTrue(
             $formModel->hasPropertyValidate('name'),
-            'Should report the property as validated after clearing its error state.',
+            "Should report the property as validated after 'clearError()' marks it as explicitly validated.",
         );
     }
 

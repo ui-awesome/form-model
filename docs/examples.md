@@ -79,6 +79,8 @@ echo $form->getLabelByProperty('seoTitle');
 ```php
 <?php
 
+$form = new ContactForm();
+
 $form->addPropertyError('email', 'Email is required.');
 $form->addPropertyError('email', 'Email format is invalid.');
 

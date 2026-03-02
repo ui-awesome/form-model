@@ -29,6 +29,21 @@ final class Address extends AbstractFormModel
         ];
     }
 
+    /**
+     * @phpstan-return array<string, array<string, array<int, string>>>
+     */
+    public function getFieldConfigByProperties(): array
+    {
+        return [
+            'street' => [
+                'class()' => ['text-blue-100 dark:text-blue-100'],
+            ],
+            'city' => [
+                'class()' => ['text-red-100 dark:text-red-100'],
+            ],
+        ];
+    }
+
     public function getHints(): array
     {
         return [
@@ -60,21 +75,6 @@ final class Address extends AbstractFormModel
     {
         return [
             'street' => [$this->object],
-        ];
-    }
-
-    /**
-     * @phpstan-return array<string, array<string, array<int, string>>>
-     */
-    public function getFieldConfigByProperties(): array
-    {
-        return [
-            'street' => [
-                'class()' => ['text-blue-100 dark:text-blue-100'],
-            ],
-            'city' => [
-                'class()' => ['text-red-100 dark:text-red-100'],
-            ],
         ];
     }
 }

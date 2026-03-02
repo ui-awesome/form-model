@@ -88,7 +88,7 @@ final class FieldError
      * Empty array is returned if no error.
      * If `$first` is `true`, only the first error is returned.
      *
-     * @phpstan-return array<string>|string
+     * @phpstan-return array<int, string>|string
      */
     public function getProperty(string $property, bool $first = false): array|string
     {
@@ -113,7 +113,7 @@ final class FieldError
     public function getSummary(array $onlyProperties = [], bool $first = false): array
     {
         if ($first) {
-            return $this->getSummaryFirst();
+            return $this->getSummaryFirst($onlyProperties);
         }
 
         $errors = $this->errors;
@@ -212,11 +212,20 @@ final class FieldError
      * @return array The first error of every property in the collection.
      * Empty array is returned if no error.
      *
+     * @phpstan-param list<string> $onlyProperties
      * @phpstan-return array<int|string, string>
      */
-    private function getSummaryFirst(): array
+    private function getSummaryFirst(array $onlyProperties = []): array
     {
-        return $this->renderSummary([$this->getFirsts()]);
+        $firstErrors = $this->getFirsts();
+
+        if ($onlyProperties !== []) {
+            $onlyPropertiesMap = array_flip($onlyProperties);
+
+            $firstErrors = array_intersect_key($firstErrors, $onlyPropertiesMap);
+        }
+
+        return $firstErrors;
     }
 
     /**

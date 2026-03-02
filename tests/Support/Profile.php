@@ -27,6 +27,18 @@ final class Profile extends AbstractFormModel
         ];
     }
 
+    /**
+     * @phpstan-return array<string, array<string, array<int, string>>>
+     */
+    public function getFieldConfigByProperties(): array
+    {
+        return [
+            'bio' => [
+                'class()' => ['text-green-100 dark:text-green-100'],
+            ],
+        ];
+    }
+
     public function getHints(): array
     {
         return [
@@ -55,18 +67,6 @@ final class Profile extends AbstractFormModel
     {
         return [
             'bio' => [$this->object],
-        ];
-    }
-
-    /**
-     * @phpstan-return array<string, array<string, array<int, string>>>
-     */
-    public function getFieldConfigByProperties(): array
-    {
-        return [
-            'bio' => [
-                'class()' => ['text-green-100 dark:text-green-100'],
-            ],
         ];
     }
 }

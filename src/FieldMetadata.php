@@ -10,6 +10,7 @@ use Traversable;
 use function explode;
 use function iterator_to_array;
 use function str_contains;
+use function trim;
 
 /**
  * FieldMetadata is the base class for field metadata handling in forms.
@@ -18,7 +19,9 @@ final class FieldMetadata
 {
     public function __construct(private readonly FormModelInterface $formModel) {}
 
-    /** @phpstan-param array<int|string, mixed>|string $defaultValue */
+    /**
+     * @phpstan-param array<int|string, mixed>|string $defaultValue
+     */
     public function get(
         string $method,
         string $methodNested,
@@ -73,12 +76,14 @@ final class FieldMetadata
     {
         if (str_contains($property, '.')) {
             $result = explode('.', $property, 2);
+            $parentProperty = $result[0];
+            $nestedProperty = $result[1] ?? '';
 
-            if (!isset($result[1])) {
+            if (trim($parentProperty) === '' || trim($nestedProperty) === '') {
                 throw new InvalidArgumentException("Invalid nested property format: {$property}.");
             }
 
-            return [$result[0], $result[1]];
+            return [$parentProperty, $nestedProperty];
         }
 
         return [$property, null];

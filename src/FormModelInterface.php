@@ -72,6 +72,34 @@ interface FormModelInterface extends ModelInterface
     public function getErrorSummary(array $onlyProperties = [], bool $first = false): array;
 
     /**
+     * Returns the field configurations for multiple properties, indexed by property name.
+     *
+     * @return array The field configurations for multiple properties in an associative array format.
+     *
+     * ```php
+     * [
+     *     'property' => [
+     *        'class()' => ['text-gray-100 dark:text-gray-100'],
+     *     ],
+     * ]
+     * ```
+     *
+     * @phpstan-return array<string, array<string, array<int, string>>>
+     */
+    public function getFieldConfigByProperties(): array;
+
+    /**
+     * Returns the field configuration for the specified property.
+     *
+     * @param string $property The property name.
+     *
+     * @return array The field configuration for the specified property.
+     *
+     * @phpstan-return array<int|string, mixed>
+     */
+    public function getFieldConfigByProperty(string $property): array;
+
+    /**
      * @param string $property The property name.
      *
      * @return string The text hint for the specified property.
@@ -159,34 +187,6 @@ interface FormModelInterface extends ModelInterface
      * @phpstan-return array<mixed, mixed>|null
      */
     public function getRulesByProperty(string $property): array|null;
-
-    /**
-     * Returns the field configurations for multiple properties, indexed by property name.
-     *
-     * @return array The field configurations for multiple properties in an associative array format.
-     *
-     * ```php
-     * [
-     *     'property' => [
-     *        'class()' => ['text-gray-100 dark:text-gray-100'],
-     *     ],
-     * ]
-     * ```
-     *
-     * @phpstan-return array<string, array<string, array<int, string>>>
-     */
-    public function getFieldConfigByProperties(): array;
-
-    /**
-     * Returns the field configuration for the specified property.
-     *
-     * @param string $property The property name.
-     *
-     * @return array The field configuration for the specified property.
-     *
-     * @phpstan-return array<int|string, mixed>
-     */
-    public function getFieldConfigByProperty(string $property): array;
 
     /**
      * Returns a value indicating whether there is any validation error.

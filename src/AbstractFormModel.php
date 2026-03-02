@@ -39,6 +39,29 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
         return $this->error()->getSummary($onlyProperties, $first);
     }
 
+    /**
+     * @phpstan-return array<string, array<string, array<int, string>>>
+     */
+    public function getFieldConfigByProperties(): array
+    {
+        return [];
+    }
+
+    /**
+     * @phpstan-return array<int|string, mixed>
+     */
+    public function getFieldConfigByProperty(string $property): array
+    {
+        $fieldConfigByProperty = $this->metadata()->get(
+            'getFieldConfigByProperties',
+            'getFieldConfigByProperty',
+            $property,
+            [],
+        );
+
+        return is_array($fieldConfigByProperty) ? $fieldConfigByProperty : [];
+    }
+
     public function getHintByProperty(string $property): string
     {
         $hintByProperty = $this->metadata()->get('getHints', 'getHintByProperty', $property);
@@ -97,29 +120,6 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
         $ruleByProperty = $this->metadata()->get('getRules', 'getRulesByProperty', $property);
 
         return is_array($ruleByProperty) ? $ruleByProperty : null;
-    }
-
-    /**
-     * @phpstan-return array<string, array<string, array<int, string>>>
-     */
-    public function getFieldConfigByProperties(): array
-    {
-        return [];
-    }
-
-    /**
-     * @phpstan-return array<int|string, mixed>
-     */
-    public function getFieldConfigByProperty(string $property): array
-    {
-        $fieldConfigByProperty = $this->metadata()->get(
-            'getFieldConfigByProperties',
-            'getFieldConfigByProperty',
-            $property,
-            [],
-        );
-
-        return is_array($fieldConfigByProperty) ? $fieldConfigByProperty : [];
     }
 
     public function hasPropertyError(string|null $property = null): bool

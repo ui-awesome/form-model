@@ -27,6 +27,18 @@ final class User extends AbstractFormModel
         ];
     }
 
+    /**
+     * @phpstan-return array<string, array<string, array<int, string>>>
+     */
+    public function getFieldConfigByProperties(): array
+    {
+        return [
+            'name' => [
+                'class()' => ['text-gray-100 dark:text-gray-100'],
+            ],
+        ];
+    }
+
     public function getHints(): array
     {
         return [
@@ -55,18 +67,6 @@ final class User extends AbstractFormModel
     {
         return [
             'name' => [$this->object],
-        ];
-    }
-
-    /**
-     * @phpstan-return array<string, array<string, array<int, string>>>
-     */
-    public function getFieldConfigByProperties(): array
-    {
-        return [
-            'name' => [
-                'class()' => ['text-gray-100 dark:text-gray-100'],
-            ],
         ];
     }
 }
