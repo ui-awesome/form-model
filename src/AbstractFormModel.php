@@ -126,7 +126,7 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
     }
 
     /**
-     * @phpstan-return iterable<string, mixed[]>
+     * @phpstan-return iterable<string, array<mixed, mixed>>
      */
     public function getRules(): iterable
     {
@@ -134,7 +134,7 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
     }
 
     /**
-     * @phpstan-return mixed[]|null
+     * @phpstan-return array<mixed, mixed>|null
      */
     public function getRulesByProperty(string $property): array|null
     {

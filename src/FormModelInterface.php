@@ -164,7 +164,7 @@ interface FormModelInterface extends ModelInterface
      * $labels = $form->getLabels();
      * ```
      *
-     * @phpstan-return string[]
+     * @phpstan-return array<string, string>
      */
     public function getLabels(): array;
 
@@ -190,7 +190,7 @@ interface FormModelInterface extends ModelInterface
      * $placeholders = $form->getPlaceholders();
      * ```
      *
-     * @phpstan-return string[]
+     * @phpstan-return array<string, string>
      */
     public function getPlaceholders(): array;
 
