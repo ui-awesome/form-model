@@ -96,7 +96,7 @@ interface FormModelInterface extends ModelInterface
      *
      * @return array Field configuration arrays indexed by property name.
      *
-     * @phpstan-return array<string, array<string, array<int, string>>>
+     * @phpstan-return array<string, array<int|string, mixed>>
      */
     public function getFieldConfigByProperties(): array;
 
@@ -138,7 +138,7 @@ interface FormModelInterface extends ModelInterface
      * $hints = $form->getHints();
      * ```
      *
-     * @phpstan-return string[]
+     * @phpstan-return array<string, string>
      */
     public function getHints(): array;
 

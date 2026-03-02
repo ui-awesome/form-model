@@ -63,9 +63,6 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
         return $this->error()->getSummary($onlyProperties, $first);
     }
 
-    /**
-     * @phpstan-return array<string, array<string, array<int, string>>>
-     */
     public function getFieldConfigByProperties(): array
     {
         return [];
