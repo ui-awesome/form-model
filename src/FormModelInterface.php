@@ -168,7 +168,7 @@ interface FormModelInterface extends ModelInterface
      * Empty array is returned if no error.
      * If `$first` is `true`, only the first error is returned.
      *
-     * @phpstan-return array<string>|string
+     * @phpstan-return array<int, string>|string
      */
     public function getPropertyError(string $property, bool $first = false): array|string;
 

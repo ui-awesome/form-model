@@ -31,20 +31,19 @@ final class FieldMetadata
         [$property, $nested] = $this->getNestedMetadata($property);
 
         if ($nested !== null) {
-            $nestedValue = $this->formModel->getPropertyValue($property);
-
-            if ($nestedValue instanceof FormModelInterface) {
-                return match ($methodNested) {
-                    'getHintByProperty' => $nestedValue->getHintByProperty($nested),
-                    'getLabelByProperty' => $nestedValue->getLabelByProperty($nested),
-                    'getPlaceholderByProperty' => $nestedValue->getPlaceholderByProperty($nested),
-                    'getRulesByProperty' => $nestedValue->getRulesByProperty($nested),
-                    'getFieldConfigByProperty' => $nestedValue->getFieldConfigByProperty($nested),
-                    default => throw new InvalidArgumentException("Unknown nested metadata method: {$methodNested}."),
-                };
-            }
+            return $this->getNestedValue($methodNested, $property, $nested, $defaultValue);
         }
 
+        $metadata = $this->getMetadataByMethod($method);
+
+        return $metadata[$property] ?? $defaultValue;
+    }
+
+    /**
+     * @phpstan-return array<int|string, mixed>
+     */
+    private function getMetadataByMethod(string $method): array
+    {
         $metadata = match ($method) {
             'getHints' => $this->formModel->getHints(),
             'getLabels' => $this->formModel->getLabels(),
@@ -55,10 +54,10 @@ final class FieldMetadata
         };
 
         if ($metadata instanceof Traversable) {
-            $metadata = iterator_to_array($metadata);
+            return iterator_to_array($metadata);
         }
 
-        return $metadata[$property] ?? $defaultValue;
+        return $metadata;
     }
 
     /**
@@ -87,5 +86,30 @@ final class FieldMetadata
         }
 
         return [$property, null];
+    }
+
+    /**
+     * @phpstan-param array<int|string, mixed>|string $defaultValue
+     */
+    private function getNestedValue(
+        string $methodNested,
+        string $property,
+        string $nested,
+        array|string $defaultValue,
+    ): mixed {
+        $nestedValue = $this->formModel->getPropertyValue($property);
+
+        if (!$nestedValue instanceof FormModelInterface) {
+            return $defaultValue;
+        }
+
+        return match ($methodNested) {
+            'getHintByProperty' => $nestedValue->getHintByProperty($nested),
+            'getLabelByProperty' => $nestedValue->getLabelByProperty($nested),
+            'getPlaceholderByProperty' => $nestedValue->getPlaceholderByProperty($nested),
+            'getRulesByProperty' => $nestedValue->getRulesByProperty($nested),
+            'getFieldConfigByProperty' => $nestedValue->getFieldConfigByProperty($nested),
+            default => throw new InvalidArgumentException("Unknown nested metadata method: {$methodNested}."),
+        };
     }
 }

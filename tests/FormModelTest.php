@@ -218,14 +218,14 @@ final class FormModelTest extends TestCase
         );
     }
 
-    public function testGetLabel(): void
+    public function testGetLabelGeneratedWhenPropertyLabelIsNotDefined(): void
     {
         $formModel = new Country();
 
         self::assertSame(
-            'Country',
-            $formModel->getLabelByProperty('name'),
-            'Should return the label for the given property.',
+            'Postal Code',
+            $formModel->getLabelByProperty('postalCode'),
+            'Should generate a readable label when an explicit label is not defined for the property.',
         );
     }
 
