@@ -4,242 +4,284 @@ declare(strict_types=1);
 
 namespace UIAwesome\FormModel;
 
-use UIAwesome\{Html\Interop\InputInterface, Model\ModelInterface};
+use UIAwesome\Model\ModelInterface;
 
 /**
- * The FormModelInterface class defines a set of methods that must be implemented by classes that represent a form
- * model.
+ * Defines the contract for form models with validation metadata and field errors.
  *
- * A form model is a class that represents a form in a web application and is used to validate user input and handle
- * form submissions. It is usually used in conjunction with a view template that renders the form, and a controller that
- * processes the form submission and performs any necessary business logic.
+ * Usage example:
+ * ```php
+ * final class UserForm extends AbstractFormModel
+ * {
+ *     public string $email = '';
+ * }
+ *
+ * $form = new UserForm();
+ * $form->addPropertyError('email', 'Email is invalid.');
+ * ```
+ *
+ * @copyright Copyright (C) 2024 Terabytesoftw.
+ * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 interface FormModelInterface extends ModelInterface
 {
     /**
-     * Add an error for the specified property.
+     * Adds an error for a property.
      *
-     * @param string $property The property name.
-     * @param string $error The error message to be added to the property.
+     * Usage example:
+     * ```php
+     * $form->addPropertyError('email', 'Email is invalid.');
+     * ```
+     *
+     * @param string $property Property name.
+     * @param string $error Error message to append.
      */
     public function addPropertyError(string $property, string $error): void;
 
     /**
-     * Set html validation rules for the specified property.
+     * Clears errors for one property or all properties.
      *
-     * @param InputInterface $input The input widget.
-     * @param string $property The property name.
-     *
-     * @return InputInterface The input widget with the validation rules applied.
-     */
-    public function applyToHtmlRulesByProperty(InputInterface $input, string $property): InputInterface;
-
-    /**
-     * Clear errors for all or a single property.
-     *
-     * @param string|null $property The property name. Use null to clear errors for all properties.
-     */
-    public function clearError(string $property = null): void;
-
-    /**
-     * Get the error of every property in the collection.
-     *
-     * @param array $onlyProperties List of properties to return errors.
-     * @param bool $first Whether to return only the first error of each property.
-     *
-     * @return array The errors for all properties as a one-dimensional array.
-     * Empty array is returned if no error.
-     * If `$first` is `true`, only the first error of each property is returned.
-     */
-    public function getErrorSummary(array $onlyProperties = [], bool $first = false): array;
-
-    /**
-     * Get all errors for all properties.
-     *
-     * @param bool $first Whether to return only the first error of each property.
-     *
-     * @return array The errors for all properties as a two-dimensional array.
-     * Empty array is returned if no error.
-     * If `$first` is `true`, only the first error of each property is returned.
-     *
+     * Usage example:
      * ```php
-     * [
-     *     'username' => [
-     *         'Username is required.',
-     *         'Username must contain only word characters.',
-     *     ],
-     *     'email' => [
-     *         'Email address is invalid.',
-     *     ]
-     * ]
+     * $form->clearError('email');
+     * $form->clearError();
      * ```
+     *
+     * @param string|null $property Property name, or `null` to clear all properties.
+     */
+    public function clearError(string|null $property = null): void;
+
+    /**
+     * Returns validation errors indexed by property name.
+     *
+     * Usage example:
+     * ```php
+     * $allErrors = $form->getErrors();
+     * $firstErrors = $form->getErrors(true);
+     * ```
+     *
+     * @param bool $first Whether to return only the first error of each property.
+     *
+     * @return array Errors indexed by property name. Returns an empty array when no errors exist.
+     *
+     * @phpstan-return array<string, array<int, string>|string>
      */
     public function getErrors(bool $first = false): array;
 
     /**
-     * @param string $property The property name.
+     * Returns a flattened error summary.
      *
-     * @return string The text hint for the specified property.
+     * Usage example:
+     * ```php
+     * $summary = $form->getErrorSummary(['email', 'username']);
+     * ```
+     *
+     * @param array $onlyProperties Properties to include. Uses all properties when the list is empty.
+     * @param bool $first Whether to return only the first error of each property.
+     *
+     * @return array Flat list of error messages.
+     *
+     * @phpstan-param list<string> $onlyProperties
+     * @phpstan-return array<int|string, string>
+     */
+    public function getErrorSummary(array $onlyProperties = [], bool $first = false): array;
+
+    /**
+     * Returns field configuration arrays indexed by property name.
+     *
+     * Usage example:
+     * ```php
+     * $fieldConfig = $form->getFieldConfigByProperties();
+     * ```
+     *
+     * @return array Field configuration arrays indexed by property name.
+     *
+     * @phpstan-return array<string, array<int|string, mixed>>
+     */
+    public function getFieldConfigByProperties(): array;
+
+    /**
+     * Returns the field configuration for one property.
+     *
+     * Usage example:
+     * ```php
+     * $emailFieldConfig = $form->getFieldConfigByProperty('email');
+     * ```
+     *
+     * @param string $property Property name.
+     *
+     * @return array Field configuration for the property.
+     *
+     * @phpstan-return array<int|string, mixed>
+     */
+    public function getFieldConfigByProperty(string $property): array;
+
+    /**
+     * Returns the hint text for one property.
+     *
+     * Usage example:
+     * ```php
+     * $hint = $form->getHintByProperty('email');
+     * ```
+     *
+     * @param string $property Property name.
+     *
+     * @return string Hint text for the property.
      */
     public function getHintByProperty(string $property): string;
 
     /**
-     * @return array Allows defining hints for the form model propierties in associative array format.
+     * Returns hint text indexed by property name.
      *
+     * Usage example:
      * ```php
-     * [
-     *     'property' => 'hintText',
-     * ]
+     * $hints = $form->getHints();
      * ```
      *
-     * @psalm-return string[]
+     * @phpstan-return array<string, string>
      */
     public function getHints(): array;
 
     /**
-     * @param string $property The property name.
+     * Returns the label text for one property.
      *
-     * @return string the text label for the specified property.
+     * Usage example:
+     * ```php
+     * $label = $form->getLabelByProperty('email');
+     * ```
+     *
+     * @param string $property Property name.
+     *
+     * @return string Label text for the property.
      */
     public function getLabelByProperty(string $property): string;
 
     /**
-     * @return array Allows defining labels for the form model properties in associative array format.
+     * Returns label text indexed by property name.
      *
+     * Usage example:
      * ```php
-     * [
-     *     'property' => 'labelText',
-     * ]
+     * $labels = $form->getLabels();
+     * ```
      *
-     * @psalm-return string[]
+     * @phpstan-return array<string, string>
      */
     public function getLabels(): array;
 
     /**
-     * @param string $property The property name.
+     * Returns the placeholder text for one property.
      *
-     * @return string The text placeholder for the specified property.
+     * Usage example:
+     * ```php
+     * $placeholder = $form->getPlaceholderByProperty('email');
+     * ```
+     *
+     * @param string $property Property name.
+     *
+     * @return string Placeholder text for the property.
      */
     public function getPlaceholderByProperty(string $property): string;
 
     /**
-     * @return array Allows defining placeholders for the form model properties in associative array format.
+     * Returns placeholder text indexed by property name.
      *
+     * Usage example:
      * ```php
-     * [
-     *     'property' => 'placeholderText',
-     * ]
+     * $placeholders = $form->getPlaceholders();
      * ```
      *
-     * @psalm-return string[]
+     * @phpstan-return array<string, string>
      */
     public function getPlaceholders(): array;
 
     /**
-     * Get the errors for a single property.
+     * Returns errors for one property.
      *
-     * @param string $property The property name.
+     * Usage example:
+     * ```php
+     * $errors = $form->getPropertyError('email');
+     * $firstError = $form->getPropertyError('email', true);
+     * ```
+     *
+     * @param string $property Property name.
      * @param bool $first Whether to return only the first error of the specified property.
      *
-     * @return array|string The errors for an property with a given name.
-     * Empty array is returned if no error.
-     * If `$first` is `true`, only the first error is returned.
+     * @return array|string Error list for the property, or the first error when `$first` is `true`.
      *
-     * @psalm-return array<string>|string
+     * @phpstan-return array<int, string>|string
      */
     public function getPropertyError(string $property, bool $first = false): array|string;
 
     /**
-     * @return iterable A set of validation rules.
+     * Returns validation rules indexed by property name.
+     *
+     * Usage example:
+     * ```php
+     * $rules = $form->getRules();
+     * ```
+     *
+     * @return iterable Validation rules indexed by property name.
+     *
+     * @phpstan-return iterable<string, array<mixed, mixed>>
      */
     public function getRules(): iterable;
 
     /**
-     * @param string $property The property name.
+     * Returns validation rules for one property.
      *
-     * @return array|null The validation rules for the specified property. Null is returned if no rules are defined.
+     * Usage example:
+     * ```php
+     * $emailRules = $form->getRulesByProperty('email');
+     * ```
+     *
+     * @param string $property Property name.
+     *
+     * @return array|null Validation rules for the property, or `null` when no rules are defined.
+     *
+     * @phpstan-return array<mixed, mixed>|null
      */
     public function getRulesByProperty(string $property): array|null;
 
     /**
-     * Returns the configurations for multiple widgets, indexed by Widget class name.
+     * Checks whether errors exist.
      *
-     * @return array The configurations for multiple widgets in an associative array format.
-     *
-     * Example:
+     * Usage example:
      * ```php
-     * [
-     *     Button::class => [
-     *         'class()' => ['text-gray-100 dark:text-gray-100'],
-     *     ],
-     * ]
+     * $hasAnyError = $form->hasPropertyError();
+     * $hasEmailError = $form->hasPropertyError('email');
      * ```
+     *
+     * @param string|null $property Property name, or `null` to check all properties.
+     *
+     * @return bool `true` if errors exist, otherwise `false`.
      */
-    public function getWidgetConfig(): array;
+    public function hasPropertyError(string|null $property = null): bool;
 
     /**
-     * Returns the widget configuration for the specified widget class.
+     * Checks whether a property has been validated successfully.
      *
-     * @param string $class The widget class name.
-     *
-     * @return array The widget configuration for the specified widget class.
-     *
-     * @psalm-param class-string $class
-     */
-    public function getWidgetConfigByClass(string $class): array;
-
-    /**
-     * Returns the widget configuration for the specified property.
-     *
-     * @param string $property The property name.
-     *
-     * @return array The widget configuration for the specified property.
-     */
-    public function getWidgetConfigByProperty(string $property): array;
-
-    /**
-     * Returns the widget configurations for multiple properties, indexed by property name.
-     *
-     * @return array The widget configurations for multiple properties in an associative array format.
-     *
+     * Usage example:
      * ```php
-     * [
-     *     'property' => [
-     *        'class()' => ['text-gray-100 dark:text-gray-100'],
-     *     ],
-     * ]
+     * $isValid = $form->hasPropertyValidate('email');
      * ```
-     */
-    public function getWidgetConfigByProperties(): array;
-
-    /**
-     * Returns a value indicating whether there is any validation error.
      *
-     * @param string|null $property The property name. Use null to check all properties.
+     * @param string $property Property name.
      *
-     * @return bool Whether there is any error.
-     */
-    public function hasPropertyError(string $property = null): bool;
-
-    /**
-     * Returns a `true` indicating whether the property is validated successfully, `false` otherwise.
-     *
-     * @param string $property The property name.
+     * @return bool `true` if the property exists in the error map with no messages, otherwise `false`.
      */
     public function hasPropertyValidate(string $property): bool;
 
     /**
-     * Set errors for multiple properties.
+     * Replaces all property errors.
      *
-     * @param array $values The property names and the corresponding error messages.
-     *
-     * @psalm-param array<array<string>> $values
-     *
+     * Usage example:
      * ```php
-     * [
-     *    'username' => ['Username is required.', 'Username must contain only word characters.'],
-     *    'email' => ['Email address is invalid.'],
-     * ]
+     * $form->setErrors(['email' => ['Email is invalid.']]);
+     * ```
+     *
+     * @param array $values Error messages indexed by property name.
+     *
+     * @phpstan-param array<string, array<int, string>> $values
      */
     public function setErrors(array $values): void;
 }

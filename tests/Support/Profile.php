@@ -8,19 +8,34 @@ use UIAwesome\FormModel\AbstractFormModel;
 
 final class Profile extends AbstractFormModel
 {
-    public string $bio = '';
     public Address $address;
+    public string $bio = '';
 
     public function __construct(private readonly object|null $object = null)
     {
         $this->address = new Address($object);
     }
 
-    public function __debugInfo()
+    /**
+     * @return array<string, mixed>
+     */
+    public function __debugInfo(): array
     {
         return [
             'address' => $this->address,
             'bio' => $this->bio,
+        ];
+    }
+
+    /**
+     * @phpstan-return array<string, array<string, array<int, string>>>
+     */
+    public function getFieldConfigByProperties(): array
+    {
+        return [
+            'bio' => [
+                'class()' => ['text-green-100 dark:text-green-100'],
+            ],
         ];
     }
 
@@ -45,19 +60,13 @@ final class Profile extends AbstractFormModel
         ];
     }
 
+    /**
+     * @phpstan-return array<string, array<int, mixed>>
+     */
     public function getRules(): array
     {
         return [
             'bio' => [$this->object],
-        ];
-    }
-
-    public function getWidgetConfigByProperties(): array
-    {
-        return [
-            'bio' => [
-                'class()' => ['text-green-100 dark:text-green-100'],
-            ],
         ];
     }
 }

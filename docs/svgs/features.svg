@@ -1,0 +1,70 @@
+<svg fill="none" viewBox="0 0 1200 440" width="100%" height="340" xmlns="http://www.w3.org/2000/svg">
+    <foreignObject width="100%" height="100%">
+        <div xmlns="http://www.w3.org/1999/xhtml">
+            <style>
+                .container {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 20px;
+                    padding: 20px;
+                }
+                .card {
+                    border-left: 4px solid #1f883d;
+                    padding: 12px;
+                    margin-bottom: 16px;
+                    border-radius: 6px;
+                    background: rgba(31, 136, 61, 0.1);
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+                .title {
+                    margin: 0 0 8px 0;
+                    font-weight: 600;
+                }
+                .content {
+                    margin: 0;
+                    line-height: 1.5;
+                }
+
+                @media (prefers-color-scheme: light) {
+                    .title { color: #000000; }
+                    .content { color: #333333; }
+                    .card { background: rgba(31, 136, 61, 0.1); }
+                }
+
+                @media (prefers-color-scheme: dark) {
+                    .title { color: #ffffff; }
+                    .content { color: #ffffff; }
+                    .card { background: rgba(31, 136, 61, 0.2); }
+                }
+            </style>
+            <div class="container">
+                <div class="card">
+                    <p class="title"><strong>Field Metadata Maps</strong></p>
+                    <p class="content">Define labels, hints, placeholders, and field configuration per property using explicit map methods.</p>
+                </div>
+                <div class="card">
+                    <p class="title"><strong>Generated Label Fallbacks</strong></p>
+                    <p class="content">Automatically generate readable labels from property names when no explicit label is declared.</p>
+                </div>
+                <div class="card">
+                    <p class="title"><strong>Property Error Collection</strong></p>
+                    <p class="content">Store multiple validation messages per property, clear selectively, and query current error state.</p>
+                </div>
+                <div class="card">
+                    <p class="title"><strong>First-Error Views</strong></p>
+                    <p class="content">Return one message per property for compact UI rendering with <code>getErrors(first: true)</code>.</p>
+                </div>
+                <div class="card">
+                    <p class="title"><strong>Nested Metadata Access</strong></p>
+                    <p class="content">Resolve hints, labels, placeholders, rules, and field config through dot-notated nested paths.</p>
+                </div>
+                <div class="card">
+                    <p class="title"><strong>Summary-Friendly Output</strong></p>
+                    <p class="content">Build flat error summaries for form feedback with full-message and first-message summary modes.</p>
+                </div>
+            </div>
+        </div>
+    </foreignObject>
+</svg>
