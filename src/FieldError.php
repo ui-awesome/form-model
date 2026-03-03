@@ -9,13 +9,13 @@ use function array_intersect_key;
 use function reset;
 
 /**
- * Stores and queries validation errors by property.
+ * Stores and queries validation errors by field.
  *
  * Usage example:
  * ```php
  * $errors = new FieldError();
  * $errors->add('email', 'Email is invalid.');
- * $firstEmailError = $errors->getProperty('email', true);
+ * $firstEmailError = $errors->getField('email', true);
  * ```
  *
  * @copyright Copyright (C) 2024 Terabytesoftw.
@@ -24,30 +24,30 @@ use function reset;
 final class FieldError
 {
     /**
-     * Stores error messages indexed by property name.
+     * Stores error messages indexed by field name.
      *
      * @phpstan-var array<string, array<int, string>>
      */
     private array $errors = [];
 
     /**
-     * Adds an error message for a property.
+     * Adds an error message for a field.
      *
      * Usage example:
      * ```php
      * $errors->add('username', 'Username is required.');
      * ```
      *
-     * @param string $property Property name.
+     * @param string $field Field name.
      * @param string $error Error message to append.
      */
-    public function add(string $property, string $error): void
+    public function add(string $field, string $error): void
     {
-        $this->errors[$property][] = $error;
+        $this->errors[$field][] = $error;
     }
 
     /**
-     * Clears errors for one property or all properties.
+     * Clears errors for one field or all fields.
      *
      * Usage example:
      * ```php
@@ -55,12 +55,12 @@ final class FieldError
      * $errors->clear();
      * ```
      *
-     * @param string|null $property Property name, or `null` to clear all properties.
+     * @param string|null $field Field name, or `null` to clear all fields.
      */
-    public function clear(string|null $property = null): void
+    public function clear(string|null $field = null): void
     {
-        if ($property !== null) {
-            $this->errors[$property] = [];
+        if ($field !== null) {
+            $this->errors[$field] = [];
 
             return;
         }
@@ -69,7 +69,7 @@ final class FieldError
     }
 
     /**
-     * Returns validation errors indexed by property name.
+     * Returns validation errors indexed by field name.
      *
      * Usage example:
      * ```php
@@ -77,44 +77,88 @@ final class FieldError
      * $firstErrors = $errors->get(true);
      * ```
      *
-     * @param bool $first Whether to return only the first error for each property.
+     * @param bool $first Whether to return only the first error for each field.
      *
-     * @return array Errors indexed by property name. Returns an empty array when no errors exist.
+     * @return array Errors indexed by field name. Returns an empty array when no errors exist.
      *
      * @phpstan-return array<string, array<int, string>|string>
      */
     public function get(bool $first = false): array
     {
         if ($first) {
-            return $this->getFirsts();
+            return $this->getFirstFields();
         }
 
         return array_filter($this->errors, static fn(array $value): bool => $value !== []);
     }
 
     /**
-     * Returns errors for a single property.
+     * Returns all errors indexed by field name.
+     *
+     * @phpstan-return array<string, array<int, string>>
+     */
+    public function getAll(): array
+    {
+        /** @phpstan-var array<string, array<int, string>> $errors */
+        $errors = $this->get();
+
+        return $errors;
+    }
+
+    /**
+     * Returns the first error for each field.
+     *
+     * @phpstan-return array<string, string>
+     */
+    public function getAllFirst(): array
+    {
+        return $this->getFirstFields();
+    }
+
+    /**
+     * Returns the first error for one field.
+     */
+    public function getFirstForField(string $field): string
+    {
+        return $this->getFirst($field);
+    }
+
+    /**
+     * Returns all errors for one field.
+     *
+     * @phpstan-return array<int, string>
+     */
+    public function getForField(string $field): array
+    {
+        /** @phpstan-var array<int, string> $errors */
+        $errors = $this->getField($field);
+
+        return $errors;
+    }
+
+    /**
+     * Returns errors for a single field.
      *
      * Usage example:
      * ```php
-     * $emailErrors = $errors->getProperty('email');
-     * $firstEmailError = $errors->getProperty('email', true);
+     * $emailErrors = $errors->getField('email');
+     * $firstEmailError = $errors->getField('email', true);
      * ```
      *
-     * @param string $property Property name.
+     * @param string $field Field name.
      * @param bool $first Whether to return only the first error.
      *
-     * @return array|string Error list for the property, or the first error when `$first` is `true`.
+     * @return array|string Error list for the field, or the first error when `$first` is `true`.
      *
      * @phpstan-return array<int, string>|string
      */
-    public function getProperty(string $property, bool $first = false): array|string
+    public function getField(string $field, bool $first = false): array|string
     {
         if ($first) {
-            return $this->getFirst($property);
+            return $this->getFirst($field);
         }
 
-        return $this->errors[$property] ?? [];
+        return $this->errors[$field] ?? [];
     }
 
     /**
@@ -125,26 +169,26 @@ final class FieldError
      * $summary = $errors->getSummary(['email', 'username']);
      * ```
      *
-     * @param array $onlyProperties Properties to include. Uses all properties when the list is empty.
-     * @param bool $first Whether to include only the first error for each property.
+     * @param array $onlyFields Fields to include. Uses all fields when the list is empty.
+     * @param bool $first Whether to include only the first error for each field.
      *
      * @return array Flat list of error messages.
      *
-     * @phpstan-param list<string> $onlyProperties
+     * @phpstan-param list<string> $onlyFields
      * @phpstan-return array<int|string, string>
      */
-    public function getSummary(array $onlyProperties = [], bool $first = false): array
+    public function getSummary(array $onlyFields = [], bool $first = false): array
     {
         if ($first) {
-            return $this->getSummaryFirst($onlyProperties);
+            return $this->getSummaryFirst($onlyFields);
         }
 
         $errors = $this->errors;
 
-        if ($onlyProperties !== []) {
-            $onlyPropertiesMap = array_flip($onlyProperties);
+        if ($onlyFields !== []) {
+            $onlyFieldsMap = array_flip($onlyFields);
 
-            $errors = array_intersect_key($errors, $onlyPropertiesMap);
+            $errors = array_intersect_key($errors, $onlyFieldsMap);
         }
 
         return $this->renderSummary($errors);
@@ -159,34 +203,34 @@ final class FieldError
      * $hasEmailErrors = $errors->has('email');
      * ```
      *
-     * @param string|null $property Property name, or `null` to check all properties.
+     * @param string|null $field Field name, or `null` to check all fields.
      *
      * @return bool `true` if errors exist, otherwise `false`.
      */
-    public function has(string|null $property = null): bool
+    public function has(string|null $field = null): bool
     {
-        if ($property === null) {
+        if ($field === null) {
             return $this->get() !== [];
         }
 
-        return isset($this->errors[$property]) && $this->errors[$property] !== [];
+        return isset($this->errors[$field]) && $this->errors[$field] !== [];
     }
 
     /**
-     * Checks whether a property has been validated successfully.
+     * Checks whether a field has been validated successfully.
      *
      * Usage example:
      * ```php
-     * $isValidated = $errors->hasValidate('email');
+     * $isValidated = $errors->isValidated('email');
      * ```
      *
-     * @param string $property Property name.
+     * @param string $field Field name.
      *
-     * @return bool `true` if the property exists in the error map with no messages, otherwise `false`.
+     * @return bool `true` if the field exists in the error map with no messages, otherwise `false`.
      */
-    public function hasValidate(string $property): bool
+    public function isValidated(string $field): bool
     {
-        return isset($this->errors[$property]) && $this->errors[$property] === [];
+        return isset($this->errors[$field]) && $this->errors[$field] === [];
     }
 
     /**
@@ -197,7 +241,7 @@ final class FieldError
      * $errors->set(['email' => ['Email is invalid.']]);
      * ```
      *
-     * @param array $values Error messages indexed by property name.
+     * @param array $values Error messages indexed by field name.
      *
      * @phpstan-param array<string, array<int, string>> $values
      */
@@ -207,29 +251,29 @@ final class FieldError
     }
 
     /**
-     * Returns the first error for a property.
+     * Returns the first error for a field.
      *
-     * @param string $property Property name.
+     * @param string $field Field name.
      *
      * @return string First error message, or an empty string when no errors exist.
      */
-    private function getFirst(string $property): string
+    private function getFirst(string $field): string
     {
-        if (!isset($this->errors[$property]) || $this->errors[$property] === []) {
+        if (!isset($this->errors[$field]) || $this->errors[$field] === []) {
             return '';
         }
 
-        return reset($this->errors[$property]);
+        return reset($this->errors[$field]);
     }
 
     /**
-     * Returns the first error for each property.
+     * Returns the first error for each field.
      *
-     * @return array First error messages indexed by property name.
+     * @return array First error messages indexed by field name.
      *
      * @phpstan-return array<string, string>
      */
-    private function getFirsts(): array
+    private function getFirstFields(): array
     {
         $errors = [];
 
@@ -247,19 +291,19 @@ final class FieldError
     }
 
     /**
-     * Returns a summary containing the first error for each property.
+     * Returns a summary containing the first error for each field.
      *
-     * @phpstan-param list<string> $onlyProperties
+     * @phpstan-param list<string> $onlyFields
      * @phpstan-return array<int|string, string>
      */
-    private function getSummaryFirst(array $onlyProperties = []): array
+    private function getSummaryFirst(array $onlyFields = []): array
     {
-        $firstErrors = $this->getFirsts();
+        $firstErrors = $this->getFirstFields();
 
-        if ($onlyProperties !== []) {
-            $onlyPropertiesMap = array_flip($onlyProperties);
+        if ($onlyFields !== []) {
+            $onlyFieldsMap = array_flip($onlyFields);
 
-            $firstErrors = array_intersect_key($firstErrors, $onlyPropertiesMap);
+            $firstErrors = array_intersect_key($firstErrors, $onlyFieldsMap);
         }
 
         return $firstErrors;

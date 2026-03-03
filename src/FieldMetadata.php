@@ -13,7 +13,7 @@ use function str_contains;
 use function trim;
 
 /**
- * Resolves field metadata for form model properties, including nested properties.
+ * Resolves field metadata for form model fields, including nested fields.
  *
  * Usage example:
  * ```php
@@ -32,7 +32,7 @@ final class FieldMetadata
     public function __construct(private readonly FormModelInterface $formModel) {}
 
     /**
-     * Returns metadata for a property using direct or nested resolution.
+     * Returns metadata for a field using direct or nested resolution.
      *
      * Usage example:
      * ```php
@@ -42,7 +42,7 @@ final class FieldMetadata
      *
      * @param string $method Method used to retrieve top-level metadata maps.
      * @param string $methodNested Method used to retrieve nested metadata values.
-     * @param string $property Property name, optionally in dot notation.
+     * @param string $property Field path, optionally in dot notation.
      * @param array|string $defaultValue Default value returned when metadata is unavailable.
      *
      * @phpstan-param array<int|string, mixed>|string $defaultValue
@@ -53,15 +53,15 @@ final class FieldMetadata
         string $property,
         array|string $defaultValue = '',
     ): mixed {
-        [$property, $nested] = $this->getNestedMetadata($property);
+        [$field, $nested] = $this->getNestedMetadata($property);
 
         if ($nested !== null) {
-            return $this->getNestedValue($methodNested, $property, $nested, $defaultValue);
+            return $this->getNestedValue($methodNested, $field, $nested, $defaultValue);
         }
 
         $metadata = $this->getMetadataByMethod($method);
 
-        return $metadata[$property] ?? $defaultValue;
+        return $metadata[$field] ?? $defaultValue;
     }
 
     /**
@@ -88,50 +88,50 @@ final class FieldMetadata
     }
 
     /**
-     * Splits a property path into parent and nested segments.
+     * Splits a field path into parent and nested segments.
      *
-     * @param string $property Property name, optionally in dot notation.
+     * @param string $fieldPath Field path, optionally in dot notation.
      *
-     * @throws InvalidArgumentException If the nested property format is invalid.
+     * @throws InvalidArgumentException If the nested field path format is invalid.
      *
-     * @return array Array with parent property and nested property, or `null` when not nested.
+     * @return array Array with parent field and nested field, or `null` when not nested.
      *
      * @phpstan-return array{0: string, 1: null|string}
      */
-    private function getNestedMetadata(string $property): array
+    private function getNestedMetadata(string $fieldPath): array
     {
-        if (str_contains($property, '.')) {
-            $result = explode('.', $property, 2);
-            $parentProperty = $result[0];
-            $nestedProperty = $result[1] ?? '';
+        if (str_contains($fieldPath, '.')) {
+            $result = explode('.', $fieldPath, 2);
+            $parentField = $result[0];
+            $nestedField = $result[1] ?? '';
 
-            if (trim($parentProperty) === '' || trim($nestedProperty) === '') {
-                throw new InvalidArgumentException("Invalid nested property format: {$property}.");
+            if (trim($parentField) === '' || trim($nestedField) === '') {
+                throw new InvalidArgumentException("Invalid nested field path format: {$fieldPath}.");
             }
 
-            return [$parentProperty, $nestedProperty];
+            return [$parentField, $nestedField];
         }
 
-        return [$property, null];
+        return [$fieldPath, null];
     }
 
     /**
-     * Returns metadata for a nested property on a nested form model.
+     * Returns metadata for a nested field on a nested form model.
      *
      * @param string $methodNested Method used to query nested metadata.
-     * @param string $property Parent property name.
-     * @param string $nested Nested property name.
+     * @param string $field Parent field name.
+     * @param string $nested Nested field name.
      * @param array|string $defaultValue Default value returned when nested metadata is unavailable.
      *
      * @phpstan-param array<int|string, mixed>|string $defaultValue
      */
     private function getNestedValue(
         string $methodNested,
-        string $property,
+        string $field,
         string $nested,
         array|string $defaultValue,
     ): mixed {
-        $nestedValue = $this->formModel->getValue($property);
+        $nestedValue = $this->formModel->getValue($field);
 
         if (!$nestedValue instanceof FormModelInterface) {
             return $defaultValue;

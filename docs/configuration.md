@@ -6,7 +6,7 @@ This guide describes form model conventions and runtime behavior for metadata an
 
 ## Form model declaration
 
-Create form models by extending `AbstractFormModel` and declaring typed properties.
+Create form models by extending `AbstractFormModel` and declaring typed public properties that represent fields.
 
 ```php
 <?php
@@ -69,8 +69,8 @@ final class SignInForm extends AbstractFormModel
 
 - `getHint()`, `getLabel()`, and `getPlaceholder()` resolve values from their map methods.
 - Missing labels fall back to generated title-case labels.
-- `getRule()` returns property rules or `null` when no rules exist.
-- `getFieldConfig()` returns field configuration for a single property.
+- `getRule()` returns field rules or `null` when no rules exist.
+- `getFieldConfig()` returns field configuration for a single field.
 
 ```php
 $label = $form->getLabel('email');
@@ -92,10 +92,10 @@ $rules = $form->getRule('profile.address.city');
 
 ## Error lifecycle
 
-- `addError()` appends a message to one property.
-- `setErrors()` replaces all property error collections.
-- `clearError()` clears all errors or one property.
-- `getFirstErrors()` returns the first error per property.
+- `addError()` appends a message to one field.
+- `setErrors()` replaces all field error collections.
+- `clearError()` clears all errors or one field.
+- `getFirstErrors()` returns the first error per field.
 - `getErrorSummary()` flattens all messages for rendering.
 - `hasError()` and `isValidated()` report current error state.
 

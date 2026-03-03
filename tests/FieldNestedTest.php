@@ -13,10 +13,10 @@ use UIAwesome\FormModel\Tests\Support\User;
  * Unit tests for resolving nested field metadata and rules on composed form models.
  *
  * Test coverage.
- * - Rejects malformed nested property strings containing empty path segments.
- * - Resolves rules for nested properties, including nullable rule responses.
- * - Returns hints, labels, and placeholders for root and deeply nested property paths.
- * - Returns nested field configuration arrays for supported property paths.
+ * - Rejects malformed nested field path strings containing empty segments.
+ * - Resolves rules for nested fields, including nullable rule responses.
+ * - Returns hints, labels, and placeholders for root and deeply nested field paths.
+ * - Returns nested field configuration arrays for supported field paths.
  *
  * @copyright Copyright (C) 2024 Terabytesoftw.
  * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
@@ -32,28 +32,28 @@ final class FieldNestedTest extends TestCase
                 'class()' => ['text-gray-100 dark:text-gray-100'],
             ],
             $fieldModel->getFieldConfig('name'),
-            'Should return field configuration for the root property.',
+            'Should return field configuration for the root field.',
         );
         self::assertSame(
             [
                 'class()' => ['text-green-100 dark:text-green-100'],
             ],
             $fieldModel->getFieldConfig('profile.bio'),
-            'Should return field configuration for the nested profile property.',
+            'Should return field configuration for the nested profile field.',
         );
         self::assertSame(
             [
                 'class()' => ['text-blue-100 dark:text-blue-100'],
             ],
             $fieldModel->getFieldConfig('profile.address.street'),
-            'Should return field configuration for the deeply nested street property.',
+            'Should return field configuration for the deeply nested street field.',
         );
         self::assertSame(
             [
                 'class()' => ['text-red-100 dark:text-red-100'],
             ],
             $fieldModel->getFieldConfig('profile.address.city'),
-            'Should return field configuration for the deeply nested city property.',
+            'Should return field configuration for the deeply nested city field.',
         );
     }
 
@@ -88,42 +88,42 @@ final class FieldNestedTest extends TestCase
         );
     }
 
-    public function testGetHintRejectsLeadingDotNestedProperty(): void
+    public function testGetHintRejectsLeadingDotNestedFieldPath(): void
     {
         $fieldModel = new User();
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid nested property format: .profile.');
+        $this->expectExceptionMessage('Invalid nested field path format: .profile.');
 
         $fieldModel->getHint('.profile');
     }
 
-    public function testGetHintRejectsTrailingDotNestedProperty(): void
+    public function testGetHintRejectsTrailingDotNestedFieldPath(): void
     {
         $fieldModel = new User();
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid nested property format: profile..');
+        $this->expectExceptionMessage('Invalid nested field path format: profile..');
 
         $fieldModel->getHint('profile.');
     }
 
-    public function testGetHintRejectsWhitespaceOnlyNestedSegment(): void
+    public function testGetHintRejectsWhitespaceOnlyNestedFieldSegment(): void
     {
         $fieldModel = new User();
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid nested property format: profile.   .');
+        $this->expectExceptionMessage('Invalid nested field path format: profile.   .');
 
         $fieldModel->getHint('profile.   ');
     }
 
-    public function testGetHintRejectsWhitespaceOnlyParentSegment(): void
+    public function testGetHintRejectsWhitespaceOnlyParentFieldSegment(): void
     {
         $fieldModel = new User();
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid nested property format:    .profile.');
+        $this->expectExceptionMessage('Invalid nested field path format:    .profile.');
 
         $fieldModel->getHint('   .profile');
     }
@@ -198,21 +198,21 @@ final class FieldNestedTest extends TestCase
         self::assertSame(
             [$validatorObject],
             $fieldModel->getRule('name'),
-            'Should return validators for the root property.',
+            'Should return validators for the root field.',
         );
         self::assertNull(
             $fieldModel->getRule('profile.address.city'),
-            'Should return null when no validators are configured for the nested property.',
+            'Should return null when no validators are configured for the nested field.',
         );
         self::assertSame(
             [$validatorObject],
             $fieldModel->getRule('profile.bio'),
-            'Should return validators for the nested profile property.',
+            'Should return validators for the nested profile field.',
         );
         self::assertSame(
             [$validatorObject],
             $fieldModel->getRule('profile.address.street'),
-            'Should return validators for the deeply nested street property.',
+            'Should return validators for the deeply nested street field.',
         );
     }
 }

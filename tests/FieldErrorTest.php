@@ -8,12 +8,12 @@ use PHPUnit\Framework\TestCase;
 use UIAwesome\FormModel\FieldError;
 
 /**
- * Unit tests for property-scoped error storage and summary behavior in {@see FieldError}.
+ * Unit tests for field-scoped error storage and summary behavior in {@see FieldError}.
  *
  * Test coverage.
- * - Adds, sets, clears, and reads errors for individual properties and full error collections.
+ * - Adds, sets, clears, and reads errors for individual fields and full error collections.
  * - Handles empty-state reads without raising errors.
- * - Reports validation and error presence globally and for specific properties.
+ * - Reports validation and error presence globally and for specific fields.
  * - Returns first-error views and full-error views for getters and summary methods.
  *
  * @copyright Copyright (C) 2024 Terabytesoftw.
@@ -29,12 +29,12 @@ final class FieldErrorTest extends TestCase
 
         self::assertTrue(
             $fieldError->has('username'),
-            'Should report the property as having an error after adding one.',
+            'Should report the field as having an error after adding one.',
         );
         self::assertSame(
             'Invalid username.',
-            $fieldError->getProperty('username', true),
-            'Should return the first error message for the property.',
+            $fieldError->getField('username', true),
+            'Should return the first error message for the field.',
         );
     }
 
@@ -58,11 +58,11 @@ final class FieldErrorTest extends TestCase
 
         self::assertEmpty(
             $fieldError->get(),
-            "Should remove all errors when 'clear()' is called without a property.",
+            "Should remove all errors when 'clear()' is called without a field.",
         );
     }
 
-    public function testClearWithProperty(): void
+    public function testClearWithField(): void
     {
         $fieldError = new FieldError();
 
@@ -75,7 +75,7 @@ final class FieldErrorTest extends TestCase
                 'email' => ['Email is required'],
             ],
             $fieldError->get(),
-            'Should keep both property errors before clearing one property.',
+            'Should keep both field errors before clearing one field.',
         );
 
         $fieldError->clear('username');
@@ -85,7 +85,7 @@ final class FieldErrorTest extends TestCase
                 'email' => ['Email is required'],
             ],
             $fieldError->get(),
-            'Should clear only the requested property errors.',
+            'Should clear only the requested field errors.',
         );
     }
 
@@ -111,7 +111,7 @@ final class FieldErrorTest extends TestCase
                 'email' => ['Invalid email', 'The field is required'],
             ],
             $fieldError->get(),
-            'Should return all stored errors grouped by property.',
+            'Should return all stored errors grouped by field.',
         );
         self::assertSame(
             [
@@ -119,11 +119,32 @@ final class FieldErrorTest extends TestCase
                 'email' => 'Invalid email',
             ],
             $fieldError->get(true),
-            'Should return only the first error per property when requested.',
+            'Should return only the first error per field when requested.',
         );
     }
 
-    public function testGetProperty(): void
+    public function testGetAll(): void
+    {
+        $fieldError = new FieldError();
+
+        $fieldError->set(
+            [
+                'username' => ['The field is required', 'Invalid username'],
+                'email' => ['Invalid email', 'The field is required'],
+            ],
+        );
+
+        self::assertSame(
+            [
+                'username' => ['The field is required', 'Invalid username'],
+                'email' => ['Invalid email', 'The field is required'],
+            ],
+            $fieldError->getAll(),
+            'Should return all stored fields and preserve all messages for each field.',
+        );
+    }
+
+    public function testGetForField(): void
     {
         $fieldError = new FieldError();
 
@@ -136,26 +157,44 @@ final class FieldErrorTest extends TestCase
 
         self::assertSame(
             ['Invalid username', 'The field is required'],
-            $fieldError->getProperty('username'),
-            'Should return all errors for the requested property.',
+            $fieldError->getForField('username'),
+            'Should return all stored messages for the requested field without truncation.',
         );
     }
 
-    public function testGetPropertyWhenEmpty(): void
+    public function testGetField(): void
+    {
+        $fieldError = new FieldError();
+
+        $fieldError->set(
+            [
+                'username' => ['Invalid username', 'The field is required'],
+                'email' => ['Invalid email', 'The field is required'],
+            ],
+        );
+
+        self::assertSame(
+            ['Invalid username', 'The field is required'],
+            $fieldError->getField('username'),
+            'Should return all errors for the requested field.',
+        );
+    }
+
+    public function testGetFieldWhenEmpty(): void
     {
         $fieldError = new FieldError();
 
         self::assertEmpty(
-            $fieldError->getProperty('username'),
-            'Should return no errors for a property with no entries.',
+            $fieldError->getField('username'),
+            'Should return no errors for a field with no entries.',
         );
         self::assertEmpty(
-            $fieldError->getProperty('username', true),
-            'Should return no first error for a property with no entries.',
+            $fieldError->getField('username', true),
+            'Should return no first error for a field with no entries.',
         );
     }
 
-    public function testGetPropertyWithFirstErrorOnly(): void
+    public function testGetFieldWithFirstErrorOnly(): void
     {
         $fieldError = new FieldError();
 
@@ -168,13 +207,13 @@ final class FieldErrorTest extends TestCase
 
         self::assertNotSame(
             'The field is required',
-            $fieldError->getProperty('username', true),
+            $fieldError->getField('username', true),
             'Should not return non-first errors when first-only mode is enabled.',
         );
         self::assertSame(
             'Invalid username',
-            $fieldError->getProperty('username', true),
-            'Should return the first error for the requested property.',
+            $fieldError->getField('username', true),
+            'Should return the first error for the requested field.',
         );
     }
 
@@ -206,7 +245,7 @@ final class FieldErrorTest extends TestCase
         );
     }
 
-    public function testGetSummaryWithFirstErrorPerProperty(): void
+    public function testGetSummaryWithFirstErrorPerField(): void
     {
         $fieldError = new FieldError();
 
@@ -223,11 +262,11 @@ final class FieldErrorTest extends TestCase
                 'email' => 'Invalid email',
             ],
             $fieldError->getSummary(first: true),
-            'Should return only the first error per property in summary mode.',
+            'Should return only the first error per field in summary mode.',
         );
     }
 
-    public function testGetSummaryWithFirstErrorPerPropertyAndOnlySelectedProperties(): void
+    public function testGetSummaryWithFirstErrorPerFieldAndOnlySelectedFields(): void
     {
         $fieldError = new FieldError();
 
@@ -243,11 +282,11 @@ final class FieldErrorTest extends TestCase
                 'username' => 'The field is required',
             ],
             $fieldError->getSummary(['username'], true),
-            'Should filter first-error summary by selected properties when both options are provided.',
+            'Should filter first-error summary by selected fields when both options are provided.',
         );
     }
 
-    public function testGetSummaryWithOnlySelectedProperty(): void
+    public function testGetSummaryWithOnlySelectedField(): void
     {
         $fieldError = new FieldError();
 
@@ -261,11 +300,11 @@ final class FieldErrorTest extends TestCase
         self::assertSame(
             ['Invalid username'],
             $fieldError->getSummary(['username']),
-            'Should return summary messages only for the selected properties.',
+            'Should return summary messages only for the selected fields.',
         );
     }
 
-    public function testGetSummaryWithSelectedPropertyAndFirstErrorPerProperty(): void
+    public function testGetSummaryWithSelectedFieldAndFirstErrorPerField(): void
     {
         $fieldError = new FieldError();
 
@@ -279,7 +318,7 @@ final class FieldErrorTest extends TestCase
         self::assertSame(
             ['username' => 'The field is required'],
             $fieldError->getSummary(['username'], true),
-            'Should return first errors only for selected properties.',
+            'Should return first errors only for selected fields.',
         );
     }
 
@@ -297,7 +336,7 @@ final class FieldErrorTest extends TestCase
         );
     }
 
-    public function testGetWithFirstErrorPerProperty(): void
+    public function testGetWithFirstErrorPerField(): void
     {
         $fieldError = new FieldError();
 
@@ -314,7 +353,7 @@ final class FieldErrorTest extends TestCase
                 'email' => 'Invalid email',
             ],
             $fieldError->get(true),
-            'Should return first errors for each property when first-only mode is enabled.',
+            'Should return first errors for each field when first-only mode is enabled.',
         );
     }
 
@@ -340,32 +379,32 @@ final class FieldErrorTest extends TestCase
         $fieldError = new FieldError();
 
         self::assertFalse(
-            $fieldError->hasValidate('username'),
-            'Should report the property as not validated before validation state is set.',
+            $fieldError->isValidated('username'),
+            'Should report the field as not validated before validation state is set.',
         );
 
         $fieldError->clear('username');
 
         self::assertTrue(
-            $fieldError->hasValidate('username'),
-            'Should report the property as validated after clearing its error state.',
+            $fieldError->isValidated('username'),
+            'Should report the field as validated after clearing its error state.',
         );
     }
 
-    public function testHasWithSpecificProperty(): void
+    public function testHasWithSpecificField(): void
     {
         $fieldError = new FieldError();
 
         self::assertFalse(
             $fieldError->has('username'),
-            'Should report no error for the property before adding one.',
+            'Should report no error for the field before adding one.',
         );
 
         $fieldError->add('username', 'Invalid username');
 
         self::assertTrue(
             $fieldError->has('username'),
-            'Should report an error for the property after adding one.',
+            'Should report an error for the field after adding one.',
         );
     }
 
@@ -380,20 +419,20 @@ final class FieldErrorTest extends TestCase
         $fieldError->clear();
 
         self::assertEmpty(
-            $fieldError->getProperty('username'),
-            'Should start with no stored errors for the property.',
+            $fieldError->getField('username'),
+            'Should start with no stored errors for the field.',
         );
 
         $fieldError->set($errorContent);
 
         self::assertTrue(
             $fieldError->has('username'),
-            'Should report an error after setting property errors.',
+            'Should report an error after setting field errors.',
         );
         self::assertSame(
             'Invalid username',
-            $fieldError->getProperty('username', true),
-            'Should return the first error value set for the property.',
+            $fieldError->getField('username', true),
+            'Should return the first error value set for the field.',
         );
     }
 }

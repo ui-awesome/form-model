@@ -27,7 +27,7 @@ use UIAwesome\Model\AbstractModel;
 abstract class AbstractFormModel extends AbstractModel implements FormModelInterface
 {
     /**
-     * Lazily initialized property-error storage.
+     * Lazily initialized field-error storage.
      */
     private FieldError|null $fieldError = null;
 
@@ -41,9 +41,14 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
         $this->error()->add($field, $error);
     }
 
-    public function clearError(string|null $property = null): void
+    public function clearError(string|null $field = null): void
     {
-        $this->error()->clear($property);
+        $this->error()->clear($field);
+    }
+
+    public function getError(string $field): array
+    {
+        return $this->error()->getForField($field);
     }
 
     /**
@@ -51,31 +56,16 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
      */
     public function getErrors(): array
     {
-        /** @phpstan-var array<string, array<int, string>> $errors */
-        return $this->error()->get();
+        return $this->error()->getAll();
     }
 
     /**
-     * @phpstan-return array<string, string>
-     */
-    public function getFirstErrors(): array
-    {
-        /** @phpstan-var array<string, string> $errors */
-        return $this->error()->get(true);
-    }
-
-    /**
-     * @phpstan-param list<string> $onlyProperties
+     * @phpstan-param list<string> $onlyFields
      * @phpstan-return array<array-key, string>
      */
-    public function getErrorSummary(array $onlyProperties = [], bool $first = false): array
+    public function getErrorSummary(array $onlyFields = [], bool $first = false): array
     {
-        return $this->error()->getSummary($onlyProperties, $first);
-    }
-
-    public function getFieldConfigs(): array
-    {
-        return [];
+        return $this->error()->getSummary($onlyFields, $first);
     }
 
     /**
@@ -91,6 +81,24 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
         );
 
         return is_array($fieldConfig) ? $fieldConfig : [];
+    }
+
+    public function getFieldConfigs(): array
+    {
+        return [];
+    }
+
+    public function getFirstError(string $field): string
+    {
+        return $this->error()->getFirstForField($field);
+    }
+
+    /**
+     * @phpstan-return array<string, string>
+     */
+    public function getFirstErrors(): array
+    {
+        return $this->error()->getAllFirst();
     }
 
     public function getHint(string $field): string
@@ -130,26 +138,6 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
         return [];
     }
 
-    public function getError(string $field): array
-    {
-        /** @phpstan-var array<int, string> $errors */
-        return $this->error()->getProperty($field);
-    }
-
-    public function getFirstError(string $field): string
-    {
-        /** @phpstan-var string $error */
-        return $this->error()->getProperty($field, true);
-    }
-
-    /**
-     * @phpstan-return iterable<string, array<mixed, mixed>>
-     */
-    public function getRules(): iterable
-    {
-        return [];
-    }
-
     /**
      * @phpstan-return array<mixed, mixed>|null
      */
@@ -160,6 +148,14 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
         return is_array($rule) ? $rule : null;
     }
 
+    /**
+     * @phpstan-return iterable<string, array<mixed, mixed>>
+     */
+    public function getRules(): iterable
+    {
+        return [];
+    }
+
     public function hasError(string|null $field = null): bool
     {
         return $this->error()->has($field);
@@ -167,7 +163,7 @@ abstract class AbstractFormModel extends AbstractModel implements FormModelInter
 
     public function isValidated(string $field): bool
     {
-        return $this->error()->hasValidate($field);
+        return $this->error()->isValidated($field);
     }
 
     public function setErrors(array $values): void

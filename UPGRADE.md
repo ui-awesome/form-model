@@ -13,7 +13,7 @@
     - `ui-awesome/html-interop` is no longer required.
     - Any direct usage of `InputInterface` with form-model must be removed from consumer code.
 
-3. Renamed property-level presentation configuration API:
+3. Renamed field-level presentation configuration API:
     - `getWidgetConfigByProperties()` -> `getFieldConfigByProperties()` -> `getFieldConfigs()`
     - `getWidgetConfigByProperty(string $property)` -> `getFieldConfigByProperty(string $property)` -> `getFieldConfig(string $field)`
 
@@ -64,6 +64,6 @@ $model->getFirstError('name');
 
 4. Remove any usage of removed APIs:
     - Delete calls to `getWidgetConfig()` and `getWidgetConfigByClass()`.
-    - Move any class-level defaults to property-level config in `getFieldConfigs()`.
+    - Move any class-level defaults to field-level config in `getFieldConfigs()`.
 
 5. Remove calls to `applyToHtmlRulesByProperty(...)` and move HTML/tag rule application to the field/tag rendering layer.

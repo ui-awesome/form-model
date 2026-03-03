@@ -22,7 +22,7 @@
 
 <p align="center">
     <strong>Form metadata and validation errors for model-driven PHP forms</strong><br>
-    <em>Hints, labels, placeholders, field configuration, nested property metadata, and property-scoped error handling</em>
+    <em>Hints, labels, placeholders, field configuration, nested field metadata, and field-scoped error handling</em>
 </p>
 
 ## Features
@@ -114,9 +114,9 @@ $label = $form->getLabel('email');
 // 'Email address'
 ```
 
-## Nested property metadata
+## Nested field metadata
 
-You can request metadata using dot notation when a property contains another `AbstractFormModel`.
+You can request metadata using dot notation when a field contains another `AbstractFormModel`.
 
 ```php
 $hint = $form->getHint('profile.address.city');
@@ -127,7 +127,7 @@ $rules = $form->getRule('profile.address.city');
 
 ## Error collection and first-error mode
 
-Use first-error mode when you need one message per property.
+Use first-error mode when you need one message per field.
 
 ```php
 $form->setErrors([

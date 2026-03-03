@@ -1,6 +1,6 @@
 # Usage examples
 
-This document provides practical examples for metadata resolution, nested properties, and error handling.
+This document provides practical examples for metadata resolution, nested fields, and error handling.
 
 ## Basic form model
 
@@ -74,7 +74,7 @@ echo $form->getLabel('seoTitle');
 // "Seo Title"
 ```
 
-## Error collection per property
+## Error collection per field
 
 ```php
 <?php
