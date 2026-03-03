@@ -42,7 +42,7 @@ final class FieldMetadata
      *
      * @param string $method Method used to retrieve top-level metadata maps.
      * @param string $methodNested Method used to retrieve nested metadata values.
-     * @param string $property Field path, optionally in dot notation.
+     * @param string $fieldPath Field path, optionally in dot notation.
      * @param array|string $defaultValue Default value returned when metadata is unavailable.
      *
      * @phpstan-param array<int|string, mixed>|string $defaultValue
@@ -50,10 +50,10 @@ final class FieldMetadata
     public function get(
         string $method,
         string $methodNested,
-        string $property,
+        string $fieldPath,
         array|string $defaultValue = '',
     ): mixed {
-        [$field, $nested] = $this->getNestedMetadata($property);
+        [$field, $nested] = $this->getNestedMetadata($fieldPath);
 
         if ($nested !== null) {
             return $this->getNestedValue($methodNested, $field, $nested, $defaultValue);

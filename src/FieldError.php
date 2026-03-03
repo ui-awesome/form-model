@@ -89,7 +89,7 @@ final class FieldError
             return $this->getFirstFields();
         }
 
-        return array_filter($this->errors, static fn(array $value): bool => $value !== []);
+        return $this->getAll();
     }
 
     /**
@@ -134,7 +134,7 @@ final class FieldError
             return $this->getFirst($field);
         }
 
-        return $this->errors[$field] ?? [];
+        return $this->getForField($field);
     }
 
     /**

@@ -146,7 +146,7 @@ $firstErrors = $form->getFirstErrors();
 
 ## Documentation
 
-For setup details and advanced usage.
+For detailed configuration options and advanced usage.
 
 - 📚 [Installation Guide](docs/installation.md)
 - ⚙️ [Configuration Reference](docs/configuration.md)

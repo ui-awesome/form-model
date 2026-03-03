@@ -92,7 +92,8 @@ interface FormModelInterface extends ModelInterface
      * @param array $onlyFields Fields to include. Uses all fields when the list is empty.
      * @param bool $first Whether to return only the first error of each field.
      *
-     * @return array Flat list of error messages.
+     * @return array Flat list of error messages when `$first` is `false`; field-indexed first errors when `$first` is
+     * `true`.
      *
      * @phpstan-param list<string> $onlyFields
      * @phpstan-return array<int|string, string>

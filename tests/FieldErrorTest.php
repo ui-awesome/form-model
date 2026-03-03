@@ -144,6 +144,27 @@ final class FieldErrorTest extends TestCase
         );
     }
 
+    public function testGetAllFirst(): void
+    {
+        $fieldError = new FieldError();
+
+        $fieldError->set(
+            [
+                'username' => ['The field is required', 'Invalid username'],
+                'email' => ['Invalid email', 'The field is required'],
+            ],
+        );
+
+        self::assertSame(
+            [
+                'username' => 'The field is required',
+                'email' => 'Invalid email',
+            ],
+            $fieldError->getAllFirst(),
+            'Should return the first error for each field.',
+        );
+    }
+
     public function testGetField(): void
     {
         $fieldError = new FieldError();
@@ -196,6 +217,23 @@ final class FieldErrorTest extends TestCase
             'Invalid username',
             $fieldError->getField('username', true),
             'Should return the first error for the requested field.',
+        );
+    }
+
+    public function testGetFirstForField(): void
+    {
+        $fieldError = new FieldError();
+
+        $fieldError->set(
+            [
+                'username' => ['Invalid username', 'The field is required'],
+            ],
+        );
+
+        self::assertSame(
+            'Invalid username',
+            $fieldError->getFirstForField('username'),
+            'Should return the first error for one field.',
         );
     }
 
