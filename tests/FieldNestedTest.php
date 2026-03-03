@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace UIAwesome\FormModel\Tests;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+use UIAwesome\FormModel\Tests\Provider\FieldNestedProvider;
 use UIAwesome\FormModel\Tests\Support\User;
 
 /**
@@ -23,68 +25,30 @@ use UIAwesome\FormModel\Tests\Support\User;
  */
 final class FieldNestedTest extends TestCase
 {
-    public function testGetFieldConfigSeveralNestedLevels(): void
+    /**
+     * @param array<string, array<int, string>> $expected
+     */
+    #[DataProviderExternal(FieldNestedProvider::class, 'fieldConfigPathProvider')]
+    public function testGetFieldConfigSeveralNestedLevels(string $field, array $expected, string $message): void
     {
         $fieldModel = new User();
 
         self::assertSame(
-            [
-                'class()' => ['text-gray-100 dark:text-gray-100'],
-            ],
-            $fieldModel->getFieldConfig('name'),
-            'Should return field configuration for the root field.',
-        );
-        self::assertSame(
-            [
-                'class()' => ['text-green-100 dark:text-green-100'],
-            ],
-            $fieldModel->getFieldConfig('profile.bio'),
-            'Should return field configuration for the nested profile field.',
-        );
-        self::assertSame(
-            [
-                'class()' => ['text-blue-100 dark:text-blue-100'],
-            ],
-            $fieldModel->getFieldConfig('profile.address.street'),
-            'Should return field configuration for the deeply nested street field.',
-        );
-        self::assertSame(
-            [
-                'class()' => ['text-red-100 dark:text-red-100'],
-            ],
-            $fieldModel->getFieldConfig('profile.address.city'),
-            'Should return field configuration for the deeply nested city field.',
+            $expected,
+            $fieldModel->getFieldConfig($field),
+            $message,
         );
     }
 
-    public function testGetHintAcrossSeveralNestedLevels(): void
+    #[DataProviderExternal(FieldNestedProvider::class, 'hintPathProvider')]
+    public function testGetHintAcrossSeveralNestedLevels(string $field, string $expected, string $message): void
     {
         $fieldModel = new User();
 
         self::assertSame(
-            'Enter your name',
-            $fieldModel->getHint('name'),
-            'Should return the root hint value.',
-        );
-        self::assertSame(
-            'Enter your bio',
-            $fieldModel->getHint('profile.bio'),
-            'Should return the nested profile hint value.',
-        );
-        self::assertSame(
-            'Enter street name',
-            $fieldModel->getHint('profile.address.street'),
-            'Should return the deeply nested street hint value.',
-        );
-        self::assertSame(
-            'Enter city name',
-            $fieldModel->getHint('profile.address.city'),
-            'Should return the deeply nested city hint value.',
-        );
-        self::assertSame(
-            'Enter country name',
-            $fieldModel->getHint('profile.address.country.name'),
-            'Should return the deeply nested country hint value.',
+            $expected,
+            $fieldModel->getHint($field),
+            $message,
         );
     }
 
@@ -139,91 +103,46 @@ final class FieldNestedTest extends TestCase
         );
     }
 
-    public function testGetLabelAcrossSeveralNestedLevels(): void
+    #[DataProviderExternal(FieldNestedProvider::class, 'labelPathProvider')]
+    public function testGetLabelAcrossSeveralNestedLevels(string $field, string $expected, string $message): void
     {
         $fieldModel = new User();
 
         self::assertSame(
-            'Name',
-            $fieldModel->getLabel('name'),
-            'Should return the root label value.',
-        );
-        self::assertSame(
-            'Bio',
-            $fieldModel->getLabel('profile.bio'),
-            'Should return the nested profile label value.',
-        );
-        self::assertSame(
-            'Street',
-            $fieldModel->getLabel('profile.address.street'),
-            'Should return the deeply nested street label value.',
-        );
-        self::assertSame(
-            'City',
-            $fieldModel->getLabel('profile.address.city'),
-            'Should return the deeply nested city label value.',
-        );
-        self::assertSame(
-            'Country',
-            $fieldModel->getLabel('profile.address.country.name'),
-            'Should return the deeply nested country label value.',
+            $expected,
+            $fieldModel->getLabel($field),
+            $message,
         );
     }
 
-    public function testGetPlaceholderAcrossSeveralNestedLevels(): void
+    #[DataProviderExternal(FieldNestedProvider::class, 'placeholderPathProvider')]
+    public function testGetPlaceholderAcrossSeveralNestedLevels(string $field, string $expected, string $message): void
     {
         $fieldModel = new User();
 
         self::assertSame(
-            'Enter your name',
-            $fieldModel->getPlaceholder('name'),
-            'Should return the root placeholder value.',
-        );
-        self::assertSame(
-            'Enter your bio',
-            $fieldModel->getPlaceholder('profile.bio'),
-            'Should return the nested profile placeholder value.',
-        );
-        self::assertSame(
-            'Enter street name',
-            $fieldModel->getPlaceholder('profile.address.street'),
-            'Should return the deeply nested street placeholder value.',
-        );
-        self::assertSame(
-            'Enter city name',
-            $fieldModel->getPlaceholder('profile.address.city'),
-            'Should return the deeply nested city placeholder value.',
-        );
-        self::assertSame(
-            'Enter country name',
-            $fieldModel->getPlaceholder('profile.address.country.name'),
-            'Should return the deeply nested country placeholder value.',
+            $expected,
+            $fieldModel->getPlaceholder($field),
+            $message,
         );
     }
 
-    public function testGetRuleAcrossSeveralNestedLevels(): void
+    #[DataProviderExternal(FieldNestedProvider::class, 'rulePathProvider')]
+    public function testGetRuleAcrossSeveralNestedLevels(string $field, bool $expectNull, string $message): void
     {
         $validatorObject = new stdClass();
         $fieldModel = new User($validatorObject);
 
+        if ($expectNull) {
+            self::assertNull($fieldModel->getRule($field), $message);
+
+            return;
+        }
+
         self::assertSame(
             [$validatorObject],
-            $fieldModel->getRule('name'),
-            'Should return validators for the root field.',
-        );
-        self::assertNull(
-            $fieldModel->getRule('profile.address.city'),
-            'Should return null when no validators are configured for the nested field.',
-        );
-        self::assertSame(
-            [$validatorObject],
-            $fieldModel->getRule('profile.bio'),
-            'Should return validators for the nested profile field.',
-        );
-        self::assertSame(
-            [$validatorObject],
-            $fieldModel->getRule('profile.address.street'),
-            'Should return validators for the deeply nested street field.',
+            $fieldModel->getRule($field),
+            $message,
         );
     }
 }
