@@ -4,8 +4,16 @@ declare(strict_types=1);
 
 namespace UIAwesome\FormModel;
 
+use InvalidArgumentException;
 use PHPForge\Helper\WordCaseConverter;
+use Traversable;
+use UIAwesome\FormModel\Exception\Message;
 use UIAwesome\Model\BaseModel;
+
+use function explode;
+use function iterator_to_array;
+use function str_contains;
+use function trim;
 
 /**
  * Base implementation of {@see FormModelInterface}.
@@ -30,11 +38,6 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
      * Lazily initialized field-error storage.
      */
     private FieldError|null $fieldError = null;
-
-    /**
-     * Lazily initialized field-metadata resolver.
-     */
-    private FieldMetadata|null $fieldMetadata = null;
 
     public function addError(string $field, string $error): void
     {
@@ -73,14 +76,18 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
      */
     public function getFieldConfig(string $field): array
     {
-        $fieldConfig = $this->metadata()->get(
-            'getFieldConfigs',
-            'getFieldConfig',
-            $field,
-            [],
-        );
+        $nested = $this->getNestedFieldPath($field);
 
-        return is_array($fieldConfig) ? $fieldConfig : [];
+        if ($nested !== null) {
+            [$nestedName, $nestedAttribute] = $nested;
+            $nestedModel = $this->getValue($nestedName);
+
+            if ($nestedModel instanceof FormModelInterface) {
+                return $nestedModel->getFieldConfig($nestedAttribute);
+            }
+        }
+
+        return $this->getFieldConfigs()[$field] ?? [];
     }
 
     public function getFieldConfigs(): array
@@ -103,9 +110,18 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
 
     public function getHint(string $field): string
     {
-        $hint = $this->metadata()->get('getHints', 'getHint', $field);
+        $nested = $this->getNestedFieldPath($field);
 
-        return is_string($hint) ? $hint : '';
+        if ($nested !== null) {
+            [$nestedName, $nestedAttribute] = $nested;
+            $nestedModel = $this->getValue($nestedName);
+
+            if ($nestedModel instanceof FormModelInterface) {
+                return $nestedModel->getHint($nestedAttribute);
+            }
+        }
+
+        return $this->getHints()[$field] ?? '';
     }
 
     public function getHints(): array
@@ -115,10 +131,20 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
 
     public function getLabel(string $field): string
     {
-        $generateLabel = WordCaseConverter::toTitleWords($field);
-        $label = $this->metadata()->get('getLabels', 'getLabel', $field, $generateLabel);
+        $nested = $this->getNestedFieldPath($field);
 
-        return is_string($label) ? $label : '';
+        if ($nested !== null) {
+            [$nestedName, $nestedAttribute] = $nested;
+            $nestedModel = $this->getValue($nestedName);
+
+            if ($nestedModel instanceof FormModelInterface) {
+                return $nestedModel->getLabel($nestedAttribute);
+            }
+        }
+
+        $generateLabel = WordCaseConverter::toTitleWords($field);
+
+        return $this->getLabels()[$field] ?? $generateLabel;
     }
 
     public function getLabels(): array
@@ -128,9 +154,18 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
 
     public function getPlaceholder(string $field): string
     {
-        $placeholder = $this->metadata()->get('getPlaceholders', 'getPlaceholder', $field);
+        $nested = $this->getNestedFieldPath($field);
 
-        return is_string($placeholder) ? $placeholder : '';
+        if ($nested !== null) {
+            [$nestedName, $nestedAttribute] = $nested;
+            $nestedModel = $this->getValue($nestedName);
+
+            if ($nestedModel instanceof FormModelInterface) {
+                return $nestedModel->getPlaceholder($nestedAttribute);
+            }
+        }
+
+        return $this->getPlaceholders()[$field] ?? '';
     }
 
     public function getPlaceholders(): array
@@ -143,7 +178,24 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
      */
     public function getRule(string $field): array|null
     {
-        $rule = $this->metadata()->get('getRules', 'getRule', $field);
+        $nested = $this->getNestedFieldPath($field);
+
+        if ($nested !== null) {
+            [$nestedName, $nestedAttribute] = $nested;
+            $nestedModel = $this->getValue($nestedName);
+
+            if ($nestedModel instanceof FormModelInterface) {
+                return $nestedModel->getRule($nestedAttribute);
+            }
+        }
+
+        $rules = $this->getRules();
+
+        if ($rules instanceof Traversable) {
+            $rules = iterator_to_array($rules);
+        }
+
+        $rule = $rules[$field] ?? null;
 
         return is_array($rule) ? $rule : null;
     }
@@ -186,16 +238,26 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
     }
 
     /**
-     * Returns the lazily initialized metadata resolver.
+     * Splits a field path into parent and nested segments.
      *
-     * @return FieldMetadata Metadata resolver instance.
+     * @throws InvalidArgumentException If the nested field path format is invalid.
+     *
+     * @phpstan-return array{0: string, 1: string}|null
      */
-    private function metadata(): FieldMetadata
+    private function getNestedFieldPath(string $field): array|null
     {
-        if ($this->fieldMetadata === null) {
-            $this->fieldMetadata = new FieldMetadata($this);
+        if (!str_contains($field, '.')) {
+            return null;
         }
 
-        return $this->fieldMetadata;
+        $result = explode('.', $field, 2);
+        $parentField = trim($result[0]);
+        $nestedField = trim($result[1] ?? '');
+
+        if ($parentField === '' || $nestedField === '') {
+            throw new InvalidArgumentException(Message::INVALID_NESTED_FIELD_PATH->getMessage($field));
+        }
+
+        return [$parentField, $nestedField];
     }
 }

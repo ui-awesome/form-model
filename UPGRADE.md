@@ -35,6 +35,10 @@
 6. Renamed base class:
     - `UIAwesome\FormModel\AbstractFormModel` -> `UIAwesome\FormModel\BaseFormModel`
 
+7. Moved dot-notation metadata resolution into `BaseFormModel` getters:
+    - `FieldMetadata` class removed
+    - Dot-notation support added to `getFieldConfig()`, `getHint()`, `getLabel()`, `getPlaceholder()`, and `getRule()` methods in `BaseFormModel`
+
 ### Migration steps
 
 1. Replace old method names in custom form models:
