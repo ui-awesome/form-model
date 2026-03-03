@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+use UIAwesome\FormModel\Exception\Message;
 use UIAwesome\FormModel\Tests\Provider\FieldNestedProvider;
 use UIAwesome\FormModel\Tests\Support\User;
 
@@ -57,7 +58,9 @@ final class FieldNestedTest extends TestCase
         $fieldModel = new User();
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid nested field path format: .profile.');
+        $this->expectExceptionMessage(
+            Message::INVALID_NESTED_FIELD_PATH->getMessage('.profile'),
+        );
 
         $fieldModel->getHint('.profile');
     }
@@ -67,7 +70,9 @@ final class FieldNestedTest extends TestCase
         $fieldModel = new User();
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid nested field path format: profile..');
+        $this->expectExceptionMessage(
+            Message::INVALID_NESTED_FIELD_PATH->getMessage('profile.'),
+        );
 
         $fieldModel->getHint('profile.');
     }
@@ -77,7 +82,9 @@ final class FieldNestedTest extends TestCase
         $fieldModel = new User();
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid nested field path format: profile.   .');
+        $this->expectExceptionMessage(
+            Message::INVALID_NESTED_FIELD_PATH->getMessage('profile.   '),
+        );
 
         $fieldModel->getHint('profile.   ');
     }
@@ -87,7 +94,9 @@ final class FieldNestedTest extends TestCase
         $fieldModel = new User();
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid nested field path format:    .profile.');
+        $this->expectExceptionMessage(
+            Message::INVALID_NESTED_FIELD_PATH->getMessage('   .profile'),
+        );
 
         $fieldModel->getHint('   .profile');
     }

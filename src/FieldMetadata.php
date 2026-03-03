@@ -6,6 +6,7 @@ namespace UIAwesome\FormModel;
 
 use InvalidArgumentException;
 use Traversable;
+use UIAwesome\FormModel\Exception\Message;
 
 use function explode;
 use function iterator_to_array;
@@ -77,7 +78,7 @@ final class FieldMetadata
             'getPlaceholders' => $this->formModel->getPlaceholders(),
             'getRules' => $this->formModel->getRules(),
             'getFieldConfigs' => $this->formModel->getFieldConfigs(),
-            default => throw new InvalidArgumentException("Unknown metadata method: {$method}."),
+            default => throw new InvalidArgumentException(Message::UNKNOWN_METADATA_METHOD->getMessage($method)),
         };
 
         if ($metadata instanceof Traversable) {
@@ -106,7 +107,7 @@ final class FieldMetadata
             $nestedField = trim($result[1] ?? '');
 
             if ($parentField === '' || $nestedField === '') {
-                throw new InvalidArgumentException("Invalid nested field path format: {$fieldPath}.");
+                throw new InvalidArgumentException(Message::INVALID_NESTED_FIELD_PATH->getMessage($fieldPath));
             }
 
             return [$parentField, $nestedField];
@@ -143,7 +144,7 @@ final class FieldMetadata
             'getPlaceholder' => $nestedValue->getPlaceholder($nested),
             'getRule' => $nestedValue->getRule($nested),
             'getFieldConfig' => $nestedValue->getFieldConfig($nested),
-            default => throw new InvalidArgumentException("Unknown nested metadata method: {$methodNested}."),
+            default => throw new InvalidArgumentException(Message::UNKNOWN_NESTED_METADATA_METHOD->getMessage($methodNested)),
         };
     }
 }
