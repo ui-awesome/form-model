@@ -32,7 +32,7 @@ final class Address extends AbstractFormModel
     /**
      * @phpstan-return array<string, array<string, array<int, string>>>
      */
-    public function getFieldConfigByProperties(): array
+    public function getFieldConfigs(): array
     {
         return [
             'street' => [

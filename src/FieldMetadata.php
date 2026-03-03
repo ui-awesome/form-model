@@ -6,6 +6,7 @@ namespace UIAwesome\FormModel;
 
 use InvalidArgumentException;
 use Traversable;
+use UIAwesome\FormModel\Exception\Message;
 
 use function explode;
 use function iterator_to_array;
@@ -13,12 +14,12 @@ use function str_contains;
 use function trim;
 
 /**
- * Resolves field metadata for form model properties, including nested properties.
+ * Resolves field metadata for form model fields, including nested fields.
  *
  * Usage example:
  * ```php
  * $metadata = new FieldMetadata($form);
- * $emailLabel = $metadata->get('getLabels', 'getLabelByProperty', 'email');
+ * $emailLabel = $metadata->get('getLabels', 'getLabel', 'email');
  * ```
  *
  * @copyright Copyright (C) 2024 Terabytesoftw.
@@ -32,17 +33,17 @@ final class FieldMetadata
     public function __construct(private readonly FormModelInterface $formModel) {}
 
     /**
-     * Returns metadata for a property using direct or nested resolution.
+     * Returns metadata for a field using direct or nested resolution.
      *
      * Usage example:
      * ```php
-     * $label = $metadata->get('getLabels', 'getLabelByProperty', 'email');
-     * $nestedLabel = $metadata->get('getLabels', 'getLabelByProperty', 'profile.email');
+     * $label = $metadata->get('getLabels', 'getLabel', 'email');
+     * $nestedLabel = $metadata->get('getLabels', 'getLabel', 'profile.email');
      * ```
      *
      * @param string $method Method used to retrieve top-level metadata maps.
      * @param string $methodNested Method used to retrieve nested metadata values.
-     * @param string $property Property name, optionally in dot notation.
+     * @param string $fieldPath Field path, optionally in dot notation.
      * @param array|string $defaultValue Default value returned when metadata is unavailable.
      *
      * @phpstan-param array<int|string, mixed>|string $defaultValue
@@ -50,18 +51,18 @@ final class FieldMetadata
     public function get(
         string $method,
         string $methodNested,
-        string $property,
+        string $fieldPath,
         array|string $defaultValue = '',
     ): mixed {
-        [$property, $nested] = $this->getNestedMetadata($property);
+        [$field, $nested] = $this->getNestedMetadata($fieldPath);
 
         if ($nested !== null) {
-            return $this->getNestedValue($methodNested, $property, $nested, $defaultValue);
+            return $this->getNestedValue($methodNested, $field, $nested, $defaultValue);
         }
 
         $metadata = $this->getMetadataByMethod($method);
 
-        return $metadata[$property] ?? $defaultValue;
+        return $metadata[$field] ?? $defaultValue;
     }
 
     /**
@@ -76,8 +77,8 @@ final class FieldMetadata
             'getLabels' => $this->formModel->getLabels(),
             'getPlaceholders' => $this->formModel->getPlaceholders(),
             'getRules' => $this->formModel->getRules(),
-            'getFieldConfigByProperties' => $this->formModel->getFieldConfigByProperties(),
-            default => throw new InvalidArgumentException("Unknown metadata method: {$method}."),
+            'getFieldConfigs' => $this->formModel->getFieldConfigs(),
+            default => throw new InvalidArgumentException(Message::UNKNOWN_METADATA_METHOD->getMessage($method)),
         };
 
         if ($metadata instanceof Traversable) {
@@ -88,62 +89,62 @@ final class FieldMetadata
     }
 
     /**
-     * Splits a property path into parent and nested segments.
+     * Splits a field path into parent and nested segments.
      *
-     * @param string $property Property name, optionally in dot notation.
+     * @param string $fieldPath Field path, optionally in dot notation.
      *
-     * @throws InvalidArgumentException If the nested property format is invalid.
+     * @throws InvalidArgumentException If the nested field path format is invalid.
      *
-     * @return array Array with parent property and nested property, or `null` when not nested.
+     * @return array Array with parent field and nested field, or `null` when not nested.
      *
      * @phpstan-return array{0: string, 1: null|string}
      */
-    private function getNestedMetadata(string $property): array
+    private function getNestedMetadata(string $fieldPath): array
     {
-        if (str_contains($property, '.')) {
-            $result = explode('.', $property, 2);
-            $parentProperty = $result[0];
-            $nestedProperty = $result[1] ?? '';
+        if (str_contains($fieldPath, '.')) {
+            $result = explode('.', $fieldPath, 2);
+            $parentField = trim($result[0]);
+            $nestedField = trim($result[1] ?? '');
 
-            if (trim($parentProperty) === '' || trim($nestedProperty) === '') {
-                throw new InvalidArgumentException("Invalid nested property format: {$property}.");
+            if ($parentField === '' || $nestedField === '') {
+                throw new InvalidArgumentException(Message::INVALID_NESTED_FIELD_PATH->getMessage($fieldPath));
             }
 
-            return [$parentProperty, $nestedProperty];
+            return [$parentField, $nestedField];
         }
 
-        return [$property, null];
+        return [$fieldPath, null];
     }
 
     /**
-     * Returns metadata for a nested property on a nested form model.
+     * Returns metadata for a nested field on a nested form model.
      *
      * @param string $methodNested Method used to query nested metadata.
-     * @param string $property Parent property name.
-     * @param string $nested Nested property name.
+     * @param string $field Parent field name.
+     * @param string $nested Nested field name.
      * @param array|string $defaultValue Default value returned when nested metadata is unavailable.
      *
      * @phpstan-param array<int|string, mixed>|string $defaultValue
      */
     private function getNestedValue(
         string $methodNested,
-        string $property,
+        string $field,
         string $nested,
         array|string $defaultValue,
     ): mixed {
-        $nestedValue = $this->formModel->getPropertyValue($property);
+        $nestedValue = $this->formModel->getValue($field);
 
         if (!$nestedValue instanceof FormModelInterface) {
             return $defaultValue;
         }
 
         return match ($methodNested) {
-            'getHintByProperty' => $nestedValue->getHintByProperty($nested),
-            'getLabelByProperty' => $nestedValue->getLabelByProperty($nested),
-            'getPlaceholderByProperty' => $nestedValue->getPlaceholderByProperty($nested),
-            'getRulesByProperty' => $nestedValue->getRulesByProperty($nested),
-            'getFieldConfigByProperty' => $nestedValue->getFieldConfigByProperty($nested),
-            default => throw new InvalidArgumentException("Unknown nested metadata method: {$methodNested}."),
+            'getHint' => $nestedValue->getHint($nested),
+            'getLabel' => $nestedValue->getLabel($nested),
+            'getPlaceholder' => $nestedValue->getPlaceholder($nested),
+            'getRule' => $nestedValue->getRule($nested),
+            'getFieldConfig' => $nestedValue->getFieldConfig($nested),
+            default => throw new InvalidArgumentException(Message::UNKNOWN_NESTED_METADATA_METHOD->getMessage($methodNested)),
         };
     }
 }

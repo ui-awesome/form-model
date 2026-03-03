@@ -22,7 +22,7 @@
 
 <p align="center">
     <strong>Form metadata and validation errors for model-driven PHP forms</strong><br>
-    <em>Hints, labels, placeholders, field configuration, nested property metadata, and property-scoped error handling</em>
+    <em>Hints, labels, placeholders, field configuration, nested field metadata, and field-scoped error handling</em>
 </p>
 
 ## Features
@@ -86,7 +86,7 @@ final class SignInForm extends AbstractFormModel
         ];
     }
 
-    public function getFieldConfigByProperties(): array
+    public function getFieldConfigs(): array
     {
         return [
             'email' => [
@@ -98,7 +98,7 @@ final class SignInForm extends AbstractFormModel
 
 $form = new SignInForm();
 
-$form->addPropertyError('email', 'Email is required.');
+$form->addError('email', 'Email is required.');
 
 $errors = $form->getErrors();
 /*
@@ -110,24 +110,24 @@ $errors = $form->getErrors();
 $summary = $form->getErrorSummary();
 // ['Email is required.']
 
-$label = $form->getLabelByProperty('email');
+$label = $form->getLabel('email');
 // 'Email address'
 ```
 
-## Nested property metadata
+## Nested field metadata
 
-You can request metadata using dot notation when a property contains another `AbstractFormModel`.
+You can request metadata using dot notation when a field contains another `AbstractFormModel`.
 
 ```php
-$hint = $form->getHintByProperty('profile.address.city');
-$label = $form->getLabelByProperty('profile.address.city');
-$placeholder = $form->getPlaceholderByProperty('profile.address.city');
-$rules = $form->getRulesByProperty('profile.address.city');
+$hint = $form->getHint('profile.address.city');
+$label = $form->getLabel('profile.address.city');
+$placeholder = $form->getPlaceholder('profile.address.city');
+$rules = $form->getRule('profile.address.city');
 ```
 
 ## Error collection and first-error mode
 
-Use first-error mode when you need one message per property.
+Use first-error mode when you need one message per field.
 
 ```php
 $form->setErrors([
@@ -135,7 +135,7 @@ $form->setErrors([
     'password' => ['Password is required.'],
 ]);
 
-$firstErrors = $form->getErrors(first: true);
+$firstErrors = $form->getFirstErrors();
 /*
 [
     'email' => 'Email is required.',
@@ -146,14 +146,14 @@ $firstErrors = $form->getErrors(first: true);
 
 ## Documentation
 
-For setup details and advanced usage.
+For detailed configuration options and advanced usage.
 
-- [Installation guide](docs/installation.md)
-- [Configuration reference](docs/configuration.md)
-- [Usage examples](docs/examples.md)
-- [Testing guide](docs/testing.md)
-- [Development guide](docs/development.md)
-- [Upgrade guide](UPGRADE.md)
+- 📚 [Installation Guide](docs/installation.md)
+- ⚙️ [Configuration Reference](docs/configuration.md)
+- 💡 [Usage Examples](docs/examples.md)
+- 🧪 [Testing Guide](docs/testing.md)
+- 🛠️ [Development Guide](docs/development.md)
+- 🔄 [Upgrade Guide](UPGRADE.md)
 
 ## Package information
 

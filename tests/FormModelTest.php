@@ -13,9 +13,9 @@ use UIAwesome\FormModel\Tests\Support\User;
  * Unit tests for form-model metadata and field error behavior via {@see AbstractFormModel} implementations.
  *
  * Test coverage.
- * - Adds, clears, and reads property-level validation errors, including first-error extraction.
- * - Reports property validation state and returns validation rules metadata.
- * - Resolves labels, hints, placeholders, and field configuration metadata by property path.
+ * - Adds, clears, and reads field-level validation errors, including first-error extraction.
+ * - Reports field validation state and returns validation rules metadata.
+ * - Resolves labels, hints, placeholders, and field configuration metadata by field path.
  * - Returns aggregated errors and summaries for populated and empty model instances.
  *
  * @copyright Copyright (C) 2024 Terabytesoftw.
@@ -23,16 +23,16 @@ use UIAwesome\FormModel\Tests\Support\User;
  */
 final class FormModelTest extends TestCase
 {
-    public function testAddPropertyError(): void
+    public function testAddError(): void
     {
         $formModel = new Country();
 
-        $formModel->addPropertyError('name', 'Name is required.');
+        $formModel->addError('name', 'Name is required.');
 
         self::assertSame(
             ['Name is required.'],
-            $formModel->getPropertyError('name'),
-            'Should add and return the property error for the given field.',
+            $formModel->getError('name'),
+            'Should add and return the field error for the given field.',
         );
     }
 
@@ -42,8 +42,18 @@ final class FormModelTest extends TestCase
 
         self::assertSame(
             'Country',
-            $formModel->getLabelByProperty('name'),
-            'Should return the generated label for the property.',
+            $formModel->getLabel('name'),
+            'Should return the generated label for the field.',
+        );
+    }
+
+    public function testGetError(): void
+    {
+        $formModel = new Country();
+
+        self::assertEmpty(
+            $formModel->getError('name'),
+            'Should return no errors for a field without validation failures.',
         );
     }
 
@@ -51,12 +61,12 @@ final class FormModelTest extends TestCase
     {
         $formModel = new Country();
 
-        $formModel->addPropertyError('name', 'Name is required.');
+        $formModel->addError('name', 'Name is required.');
 
         self::assertSame(
             ['name' => ['Name is required.']],
             $formModel->getErrors(),
-            'Should return all errors grouped by property.',
+            'Should return all errors grouped by field.',
         );
     }
 
@@ -64,8 +74,8 @@ final class FormModelTest extends TestCase
     {
         $formModel = new Country();
 
-        $formModel->addPropertyError('name', 'Name is required.');
-        $formModel->addPropertyError('postalCode', 'Postal code is required.');
+        $formModel->addError('name', 'Name is required.');
+        $formModel->addError('postalCode', 'Postal code is required.');
 
         self::assertSame(
             [
@@ -73,7 +83,7 @@ final class FormModelTest extends TestCase
                 'Postal code is required.',
             ],
             $formModel->getErrorSummary(),
-            'Should return a flat error summary with all property messages.',
+            'Should return a flat error summary with all field messages.',
         );
     }
 
@@ -84,7 +94,7 @@ final class FormModelTest extends TestCase
         self::assertSame([], $formModel->getErrorSummary(), 'Should return an empty summary when no errors exist.');
     }
 
-    public function testGetErrorSummaryWithFirstErrorPerProperty(): void
+    public function testGetErrorSummaryWithFirstErrorPerField(): void
     {
         $formModel = new Country();
 
@@ -101,11 +111,11 @@ final class FormModelTest extends TestCase
                 'postalCode' => 'Invalid postal code',
             ],
             $formModel->getErrorSummary(first: true),
-            'Should return only the first error message per property in summary mode.',
+            'Should return only the first error message per field in summary mode.',
         );
     }
 
-    public function testGetErrorSummaryWithFirstErrorPerPropertyAndOnlySelectedProperties(): void
+    public function testGetErrorSummaryWithFirstErrorPerFieldAndOnlySelectedFields(): void
     {
         $formModel = new Country();
 
@@ -121,7 +131,7 @@ final class FormModelTest extends TestCase
                 'name' => 'The field is required',
             ],
             $formModel->getErrorSummary(['name'], true),
-            'Should return first-error summary only for selected properties when both options are provided.',
+            'Should return first-error summary only for selected fields when both options are provided.',
         );
     }
 
@@ -132,7 +142,40 @@ final class FormModelTest extends TestCase
         self::assertSame([], $formModel->getErrors(), 'Should return an empty error map when no errors exist.');
     }
 
-    public function testGetErrorsWithFirstErrorPerProperty(): void
+    public function testGetFieldConfig(): void
+    {
+        $formModel = new User();
+
+        self::assertSame(
+            [
+                'class()' => ['text-gray-100 dark:text-gray-100'],
+            ],
+            $formModel->getFieldConfig('name'),
+            'Should return field configuration for the requested field.',
+        );
+    }
+
+    public function testGetFieldConfigsWhenEmpty(): void
+    {
+        $formModel = new Country();
+
+        self::assertEmpty(
+            $formModel->getFieldConfigs(),
+            'Should return an empty field configuration map when none are defined.',
+        );
+    }
+
+    public function testGetFieldConfigWhenEmpty(): void
+    {
+        $formModel = new Country();
+
+        self::assertEmpty(
+            $formModel->getFieldConfig('name'),
+            'Should return an empty configuration when the field has no field config.',
+        );
+    }
+
+    public function testGetFirstErrors(): void
     {
         $formModel = new Country();
 
@@ -148,41 +191,18 @@ final class FormModelTest extends TestCase
                 'name' => 'The field is required',
                 'postalCode' => 'The field is required',
             ],
-            $formModel->getErrors(first: true),
-            'Should return only the first error per property when requested.',
+            $formModel->getFirstErrors(),
+            'Should return only the first error per field when requested.',
         );
     }
 
-    public function testGetFieldConfigByPropertiesWhenEmpty(): void
+    public function testGetFirstErrorWithNoErrors(): void
     {
         $formModel = new Country();
 
         self::assertEmpty(
-            $formModel->getFieldConfigByProperties(),
-            'Should return an empty field configuration map when none are defined.',
-        );
-    }
-
-    public function testGetFieldConfigByProperty(): void
-    {
-        $formModel = new User();
-
-        self::assertSame(
-            [
-                'class()' => ['text-gray-100 dark:text-gray-100'],
-            ],
-            $formModel->getFieldConfigByProperty('name'),
-            'Should return field configuration for the requested property.',
-        );
-    }
-
-    public function testGetFieldConfigByPropertyWhenEmpty(): void
-    {
-        $formModel = new Country();
-
-        self::assertEmpty(
-            $formModel->getFieldConfigByProperty('name'),
-            'Should return an empty configuration when the property has no field config.',
+            $formModel->getFirstError('name'),
+            'Should return an empty first-error value when the field has no errors.',
         );
     }
 
@@ -192,8 +212,8 @@ final class FormModelTest extends TestCase
 
         self::assertSame(
             'Enter country name',
-            $formModel->getHintByProperty('name'),
-            'Should return the hint for the given property.',
+            $formModel->getHint('name'),
+            'Should return the hint for the given field.',
         );
     }
 
@@ -204,7 +224,7 @@ final class FormModelTest extends TestCase
         self::assertSame(
             ['name' => 'Enter country name'],
             $formModel->getHints(),
-            'Should return all hints keyed by property.',
+            'Should return all hints keyed by field.',
         );
     }
 
@@ -218,14 +238,14 @@ final class FormModelTest extends TestCase
         );
     }
 
-    public function testGetLabelGeneratedWhenPropertyLabelIsNotDefined(): void
+    public function testGetLabelGeneratedWhenFieldLabelIsNotDefined(): void
     {
         $formModel = new Country();
 
         self::assertSame(
             'Postal Code',
-            $formModel->getLabelByProperty('postalCode'),
-            'Should generate a readable label when an explicit label is not defined for the property.',
+            $formModel->getLabel('postalCode'),
+            'Should generate a readable label when an explicit label is not defined for the field.',
         );
     }
 
@@ -236,7 +256,7 @@ final class FormModelTest extends TestCase
         self::assertSame(
             ['name' => 'Country'],
             $formModel->getLabels(),
-            'Should return all labels keyed by property.',
+            'Should return all labels keyed by field.',
         );
     }
 
@@ -257,8 +277,8 @@ final class FormModelTest extends TestCase
 
         self::assertSame(
             'Enter country name',
-            $formModel->getPlaceholderByProperty('name'),
-            'Should return the placeholder for the given property.',
+            $formModel->getPlaceholder('name'),
+            'Should return the placeholder for the given field.',
         );
     }
 
@@ -269,7 +289,7 @@ final class FormModelTest extends TestCase
         self::assertSame(
             ['name' => 'Enter country name'],
             $formModel->getPlaceholders(),
-            'Should return all placeholders keyed by property.',
+            'Should return all placeholders keyed by field.',
         );
     }
 
@@ -283,26 +303,6 @@ final class FormModelTest extends TestCase
         );
     }
 
-    public function testGetPropertyError(): void
-    {
-        $formModel = new Country();
-
-        self::assertEmpty(
-            $formModel->getPropertyError('name'),
-            'Should return no errors for a property without validation failures.',
-        );
-    }
-
-    public function testGetPropertyErrorWithFirstErrorOnly(): void
-    {
-        $formModel = new Country();
-
-        self::assertEmpty(
-            $formModel->getPropertyError('name', true),
-            'Should return an empty first-error value when the property has no errors.',
-        );
-    }
-
     public function testGetRules(): void
     {
         $formModel = new Country();
@@ -310,37 +310,37 @@ final class FormModelTest extends TestCase
         self::assertEmpty($formModel->getRules(), 'Should return no validation rules when none are declared.');
     }
 
-    public function testHasPropertyError(): void
+    public function testHasError(): void
     {
         $formModel = new Country();
 
         self::assertFalse(
-            $formModel->hasPropertyError('name'),
-            'Should report no error for a property before adding one.',
+            $formModel->hasError('name'),
+            'Should report no error for a field before adding one.',
         );
 
-        $formModel->addPropertyError('name', 'Name is required.');
+        $formModel->addError('name', 'Name is required.');
 
         self::assertTrue(
-            $formModel->hasPropertyError('name'),
-            'Should report an error after adding a property error.',
+            $formModel->hasError('name'),
+            'Should report an error after adding a field error.',
         );
     }
 
-    public function testHasPropertyValidate(): void
+    public function testIsValidated(): void
     {
         $formModel = new Country();
 
         self::assertFalse(
-            $formModel->hasPropertyValidate('name'),
-            'Should report the property as not validated before validation state is set.',
+            $formModel->isValidated('name'),
+            'Should report the field as not validated before validation state is set.',
         );
 
         $formModel->clearError('name');
 
         self::assertTrue(
-            $formModel->hasPropertyValidate('name'),
-            "Should report the property as validated after 'clearError()' marks it as explicitly validated.",
+            $formModel->isValidated('name'),
+            "Should report the field as validated after 'clearError()' marks it as explicitly validated.",
         );
     }
 
@@ -352,8 +352,8 @@ final class FormModelTest extends TestCase
 
         self::assertSame(
             ['Name is required.'],
-            $formModel->getPropertyError('name'),
-            'Should replace property errors with the values provided to setErrors().',
+            $formModel->getError('name'),
+            'Should replace field errors with the values provided to setErrors().',
         );
     }
 }

@@ -1,6 +1,6 @@
 # Usage examples
 
-This document provides practical examples for metadata resolution, nested properties, and error handling.
+This document provides practical examples for metadata resolution, nested fields, and error handling.
 
 ## Basic form model
 
@@ -45,10 +45,10 @@ final class ContactForm extends AbstractFormModel
 
 $form = new ContactForm();
 
-echo $form->getLabelByProperty('name');
+echo $form->getLabel('name');
 // "Full name"
 
-echo $form->getHintByProperty('email');
+echo $form->getHint('email');
 // "Use a valid email address."
 ```
 
@@ -70,21 +70,21 @@ final class PostForm extends AbstractFormModel
 
 $form = new PostForm();
 
-echo $form->getLabelByProperty('seoTitle');
+echo $form->getLabel('seoTitle');
 // "Seo Title"
 ```
 
-## Error collection per property
+## Error collection per field
 
 ```php
 <?php
 
 $form = new ContactForm();
 
-$form->addPropertyError('email', 'Email is required.');
-$form->addPropertyError('email', 'Email format is invalid.');
+$form->addError('email', 'Email is required.');
+$form->addError('email', 'Email format is invalid.');
 
-print_r($form->getPropertyError('email'));
+print_r($form->getError('email'));
 /*
 [
     'Email is required.',
@@ -98,12 +98,14 @@ print_r($form->getPropertyError('email'));
 ```php
 <?php
 
-$form->setErrors([
-    'email' => ['Email is required.', 'Email format is invalid.'],
-    'password' => ['Password is required.'],
-]);
+$form->setErrors(
+    [
+        'email' => ['Email is required.', 'Email format is invalid.'],
+        'password' => ['Password is required.'],
+    ],
+);
 
-print_r($form->getErrors(first: true));
+print_r($form->getFirstErrors());
 /*
 [
     'email' => 'Email is required.',
@@ -154,7 +156,7 @@ final class ProfileForm extends AbstractFormModel
 
 $form = new ProfileForm();
 
-echo $form->getLabelByProperty('address.city');
+echo $form->getLabel('address.city');
 // "City"
 ```
 
@@ -173,7 +175,7 @@ final class LoginForm extends AbstractFormModel
 {
     public string $email = '';
 
-    public function getFieldConfigByProperties(): array
+    public function getFieldConfigs(): array
     {
         return [
             'email' => [
@@ -185,7 +187,7 @@ final class LoginForm extends AbstractFormModel
 
 $form = new LoginForm();
 
-print_r($form->getFieldConfigByProperty('email'));
+print_r($form->getFieldConfig('email'));
 ```
 
 ## Next steps
