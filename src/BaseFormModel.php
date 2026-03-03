@@ -260,5 +260,4 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
 
         return [$parentField, $nestedField];
     }
-
 }
