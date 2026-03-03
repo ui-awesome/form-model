@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace UIAwesome\FormModel;
 
 use PHPForge\Helper\WordCaseConverter;
-use UIAwesome\Model\AbstractModel;
+use UIAwesome\Model\BaseModel;
 
 /**
  * Base implementation of {@see FormModelInterface}.
@@ -24,7 +24,7 @@ use UIAwesome\Model\AbstractModel;
  * @copyright Copyright (C) 2024 Terabytesoftw.
  * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
-abstract class BaseFormModel extends AbstractModel implements FormModelInterface
+abstract class BaseFormModel extends BaseModel implements FormModelInterface
 {
     /**
      * Lazily initialized field-error storage.
