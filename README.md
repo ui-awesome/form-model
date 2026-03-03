@@ -116,7 +116,7 @@ $label = $form->getLabel('email');
 
 ## Nested field metadata
 
-You can request metadata using dot notation when a field contains another `AbstractFormModel`.
+You can request metadata using dot notation when a field contains another `BaseFormModel`.
 
 ```php
 $hint = $form->getHint('profile.address.city');
