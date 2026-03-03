@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace App\FormModel;
 
-use UIAwesome\FormModel\AbstractFormModel;
+use UIAwesome\FormModel\BaseFormModel;
 
-final class ContactForm extends AbstractFormModel
+final class ContactForm extends BaseFormModel
 {
     public string $name = '';
     public string $email = '';
@@ -61,9 +61,9 @@ declare(strict_types=1);
 
 namespace App\FormModel;
 
-use UIAwesome\FormModel\AbstractFormModel;
+use UIAwesome\FormModel\BaseFormModel;
 
-final class PostForm extends AbstractFormModel
+final class PostForm extends BaseFormModel
 {
     public string $seoTitle = '';
 }
@@ -132,9 +132,9 @@ declare(strict_types=1);
 
 namespace App\FormModel;
 
-use UIAwesome\FormModel\AbstractFormModel;
+use UIAwesome\FormModel\BaseFormModel;
 
-final class AddressForm extends AbstractFormModel
+final class AddressForm extends BaseFormModel
 {
     public string $city = '';
 
@@ -144,7 +144,7 @@ final class AddressForm extends AbstractFormModel
     }
 }
 
-final class ProfileForm extends AbstractFormModel
+final class ProfileForm extends BaseFormModel
 {
     public AddressForm $address;
 
@@ -169,9 +169,9 @@ declare(strict_types=1);
 
 namespace App\FormModel;
 
-use UIAwesome\FormModel\AbstractFormModel;
+use UIAwesome\FormModel\BaseFormModel;
 
-final class LoginForm extends AbstractFormModel
+final class LoginForm extends BaseFormModel
 {
     public string $email = '';
 

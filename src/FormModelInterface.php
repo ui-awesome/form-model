@@ -11,7 +11,7 @@ use UIAwesome\Model\ModelInterface;
  *
  * Usage example:
  * ```php
- * final class UserForm extends AbstractFormModel
+ * final class UserForm extends BaseFormModel
  * {
  *     public string $email = '';
  * }

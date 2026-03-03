@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace UIAwesome\FormModel\Tests\Support;
 
-use UIAwesome\FormModel\AbstractFormModel;
+use UIAwesome\FormModel\BaseFormModel;
 
-final class Profile extends AbstractFormModel
+final class Profile extends BaseFormModel
 {
     public Address $address;
     public string $bio = '';

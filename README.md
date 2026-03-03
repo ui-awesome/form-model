@@ -47,9 +47,9 @@ declare(strict_types=1);
 
 namespace App\FormModel;
 
-use UIAwesome\FormModel\AbstractFormModel;
+use UIAwesome\FormModel\BaseFormModel;
 
-final class SignInForm extends AbstractFormModel
+final class SignInForm extends BaseFormModel
 {
     public string $email = '';
     public string $password = '';
@@ -130,10 +130,12 @@ $rules = $form->getRule('profile.address.city');
 Use first-error mode when you need one message per field.
 
 ```php
-$form->setErrors([
-    'email' => ['Email is required.', 'Email is invalid.'],
-    'password' => ['Password is required.'],
-]);
+$form->setErrors(
+    [
+        'email' => ['Email is required.', 'Email is invalid.'],
+        'password' => ['Password is required.'],
+    ],
+);
 
 $firstErrors = $form->getFirstErrors();
 /*

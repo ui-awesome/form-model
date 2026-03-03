@@ -12,7 +12,7 @@ use UIAwesome\Model\AbstractModel;
  *
  * Usage example:
  * ```php
- * final class UserForm extends AbstractFormModel
+ * final class UserForm extends BaseFormModel
  * {
  *     public string $email = '';
  * }
@@ -24,7 +24,7 @@ use UIAwesome\Model\AbstractModel;
  * @copyright Copyright (C) 2024 Terabytesoftw.
  * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
-abstract class AbstractFormModel extends AbstractModel implements FormModelInterface
+abstract class BaseFormModel extends AbstractModel implements FormModelInterface
 {
     /**
      * Lazily initialized field-error storage.

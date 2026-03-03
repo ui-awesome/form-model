@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace UIAwesome\FormModel\Tests;
 
 use PHPUnit\Framework\TestCase;
-use UIAwesome\FormModel\AbstractFormModel;
+use UIAwesome\FormModel\BaseFormModel;
 use UIAwesome\FormModel\Tests\Support\Country;
 use UIAwesome\FormModel\Tests\Support\User;
 
 /**
- * Unit tests for form-model metadata and field error behavior via {@see AbstractFormModel} implementations.
+ * Unit tests for form-model metadata and field error behavior via {@see BaseFormModel} implementations.
  *
  * Test coverage.
  * - Adds, clears, and reads field-level validation errors, including first-error extraction.
@@ -89,7 +89,7 @@ final class FormModelTest extends TestCase
 
     public function testGetErrorSummaryWhenEmpty(): void
     {
-        $formModel = new class extends AbstractFormModel {};
+        $formModel = new class extends BaseFormModel {};
 
         self::assertSame([], $formModel->getErrorSummary(), 'Should return an empty summary when no errors exist.');
     }
@@ -137,7 +137,7 @@ final class FormModelTest extends TestCase
 
     public function testGetErrorsWhenEmpty(): void
     {
-        $formModel = new class extends AbstractFormModel {};
+        $formModel = new class extends BaseFormModel {};
 
         self::assertSame([], $formModel->getErrors(), 'Should return an empty error map when no errors exist.');
     }
@@ -230,7 +230,7 @@ final class FormModelTest extends TestCase
 
     public function testGetHintsWhenEmpty(): void
     {
-        $formModel = new class extends AbstractFormModel {};
+        $formModel = new class extends BaseFormModel {};
 
         self::assertEmpty(
             $formModel->getHints(),
@@ -262,7 +262,7 @@ final class FormModelTest extends TestCase
 
     public function testGetLabelsWhenEmpty(): void
     {
-        $formModel = new class extends AbstractFormModel {};
+        $formModel = new class extends BaseFormModel {};
 
         self::assertSame(
             [],
@@ -295,7 +295,7 @@ final class FormModelTest extends TestCase
 
     public function testGetPlaceholdersWhenEmpty(): void
     {
-        $formModel = new class extends AbstractFormModel {};
+        $formModel = new class extends BaseFormModel {};
 
         self::assertEmpty(
             $formModel->getPlaceholders(),
