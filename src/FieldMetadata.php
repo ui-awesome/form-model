@@ -102,10 +102,10 @@ final class FieldMetadata
     {
         if (str_contains($fieldPath, '.')) {
             $result = explode('.', $fieldPath, 2);
-            $parentField = $result[0];
-            $nestedField = $result[1] ?? '';
+            $parentField = trim($result[0]);
+            $nestedField = trim($result[1] ?? '');
 
-            if (trim($parentField) === '' || trim($nestedField) === '') {
+            if ($parentField === '' || $nestedField === '') {
                 throw new InvalidArgumentException("Invalid nested field path format: {$fieldPath}.");
             }
 

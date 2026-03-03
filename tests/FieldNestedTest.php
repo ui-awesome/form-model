@@ -128,6 +128,17 @@ final class FieldNestedTest extends TestCase
         $fieldModel->getHint('   .profile');
     }
 
+    public function testGetHintTrimsIncidentalSpacesInNestedFieldPath(): void
+    {
+        $fieldModel = new User();
+
+        self::assertSame(
+            'Enter your bio',
+            $fieldModel->getHint('profile . bio'),
+            'Should resolve nested field hints when incidental spaces exist around path segments.',
+        );
+    }
+
     public function testGetLabelAcrossSeveralNestedLevels(): void
     {
         $fieldModel = new User();
