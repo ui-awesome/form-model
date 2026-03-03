@@ -99,8 +99,7 @@ final class FieldError
      */
     public function getAll(): array
     {
-        /** @phpstan-var array<string, array<int, string>> $errors */
-        return $this->get();
+        return array_filter($this->errors, static fn(array $value): bool => $value !== []);
     }
 
     /**
@@ -111,25 +110,6 @@ final class FieldError
     public function getAllFirst(): array
     {
         return $this->getFirstFields();
-    }
-
-    /**
-     * Returns the first error for one field.
-     */
-    public function getFirstForField(string $field): string
-    {
-        return $this->getFirst($field);
-    }
-
-    /**
-     * Returns all errors for one field.
-     *
-     * @phpstan-return array<int, string>
-     */
-    public function getForField(string $field): array
-    {
-        /** @phpstan-var array<int, string> $errors */
-        return $this->getField($field);
     }
 
     /**
@@ -154,6 +134,24 @@ final class FieldError
             return $this->getFirst($field);
         }
 
+        return $this->errors[$field] ?? [];
+    }
+
+    /**
+     * Returns the first error for one field.
+     */
+    public function getFirstForField(string $field): string
+    {
+        return $this->getFirst($field);
+    }
+
+    /**
+     * Returns all errors for one field.
+     *
+     * @phpstan-return array<int, string>
+     */
+    public function getForField(string $field): array
+    {
         return $this->errors[$field] ?? [];
     }
 
@@ -273,10 +271,6 @@ final class FieldError
     {
         $errors = [];
 
-        /**
-         * @phpstan-var string $name
-         * @phpstan-var array<int, string> $es
-         */
         foreach ($this->errors as $name => $es) {
             if ($es !== []) {
                 $errors[$name] = reset($es);
@@ -315,7 +309,6 @@ final class FieldError
     {
         $lines = [];
 
-        /** @phpstan-var array<int|string, string> $error */
         foreach ($errors as $error) {
             foreach ($error as $key => $line) {
                 if (is_int($key)) {

@@ -144,24 +144,6 @@ final class FieldErrorTest extends TestCase
         );
     }
 
-    public function testGetForField(): void
-    {
-        $fieldError = new FieldError();
-
-        $fieldError->set(
-            [
-                'username' => ['Invalid username', 'The field is required'],
-                'email' => ['Invalid email', 'The field is required'],
-            ],
-        );
-
-        self::assertSame(
-            ['Invalid username', 'The field is required'],
-            $fieldError->getForField('username'),
-            'Should return all stored messages for the requested field without truncation.',
-        );
-    }
-
     public function testGetField(): void
     {
         $fieldError = new FieldError();
@@ -214,6 +196,24 @@ final class FieldErrorTest extends TestCase
             'Invalid username',
             $fieldError->getField('username', true),
             'Should return the first error for the requested field.',
+        );
+    }
+
+    public function testGetForField(): void
+    {
+        $fieldError = new FieldError();
+
+        $fieldError->set(
+            [
+                'username' => ['Invalid username', 'The field is required'],
+                'email' => ['Invalid email', 'The field is required'],
+            ],
+        );
+
+        self::assertSame(
+            ['Invalid username', 'The field is required'],
+            $fieldError->getForField('username'),
+            'Should return all stored messages for the requested field without truncation.',
         );
     }
 
