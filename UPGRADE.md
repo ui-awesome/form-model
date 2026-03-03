@@ -32,6 +32,9 @@
     - `getWidgetConfig()` removed
     - `getWidgetConfigByClass(string $class)` removed
 
+6. Renamed base class:
+    - `UIAwesome\FormModel\AbstractFormModel` -> `UIAwesome\FormModel\BaseFormModel`
+
 ### Migration steps
 
 1. Replace old method names in custom form models:
@@ -67,3 +70,21 @@ $model->getFirstError('name');
     - Move any class-level defaults to field-level config in `getFieldConfigs()`.
 
 5. Remove calls to `applyToHtmlRulesByProperty(...)` and move HTML/tag rule application to the field/tag rendering layer.
+
+6. Update base-class inheritance in custom form models:
+
+```php
+// Before
+use UIAwesome\FormModel\AbstractFormModel;
+
+final class MyForm extends AbstractFormModel
+{
+}
+
+// After
+use UIAwesome\FormModel\BaseFormModel;
+
+final class MyForm extends BaseFormModel
+{
+}
+```

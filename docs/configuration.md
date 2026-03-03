@@ -6,7 +6,7 @@ This guide describes form model conventions and runtime behavior for metadata an
 
 ## Form model declaration
 
-Create form models by extending `AbstractFormModel` and declaring typed public properties that represent fields.
+Create form models by extending `BaseFormModel` and declaring typed public properties that represent fields.
 
 ```php
 <?php
@@ -15,9 +15,9 @@ declare(strict_types=1);
 
 namespace App\FormModel;
 
-use UIAwesome\FormModel\AbstractFormModel;
+use UIAwesome\FormModel\BaseFormModel;
 
-final class SignInForm extends AbstractFormModel
+final class SignInForm extends BaseFormModel
 {
     public string $email = '';
     public string $password = '';

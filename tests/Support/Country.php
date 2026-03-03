@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace UIAwesome\FormModel\Tests\Support;
 
-use UIAwesome\FormModel\AbstractFormModel;
+use UIAwesome\FormModel\BaseFormModel;
 
-final class Country extends AbstractFormModel
+final class Country extends BaseFormModel
 {
     public string $name = '';
     private string $postalCode = '';
