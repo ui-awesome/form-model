@@ -100,9 +100,7 @@ final class FieldError
     public function getAll(): array
     {
         /** @phpstan-var array<string, array<int, string>> $errors */
-        $errors = $this->get();
-
-        return $errors;
+        return $this->get();
     }
 
     /**
@@ -131,9 +129,7 @@ final class FieldError
     public function getForField(string $field): array
     {
         /** @phpstan-var array<int, string> $errors */
-        $errors = $this->getField($field);
-
-        return $errors;
+        return $this->getField($field);
     }
 
     /**
