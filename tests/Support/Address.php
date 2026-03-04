@@ -6,10 +6,18 @@ namespace UIAwesome\FormModel\Tests\Support;
 
 use UIAwesome\FormModel\BaseFormModel;
 
+/**
+ * Stub nested address form model used for tests.
+ *
+ * @copyright Copyright (C) 2024 Terabytesoftw.
+ * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
+ */
 final class Address extends BaseFormModel
 {
     public string $city = '';
+
     public Country $country;
+
     public string $street = '';
 
     public function __construct(private readonly object|null $object = null)

@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace UIAwesome\FormModel;
 
 use InvalidArgumentException;
-use PHPForge\Helper\WordCaseConverter;
+use PHPForge\Helper\{Reflector, WordCaseConverter};
 use Traversable;
+use UIAwesome\FormModel\Attribute\{FieldConfig, Hint, Label, Placeholder};
 use UIAwesome\FormModel\Exception\Message;
 use UIAwesome\Model\BaseModel;
 
@@ -54,26 +55,16 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
         return $this->error()->getForField($field);
     }
 
-    /**
-     * @phpstan-return array<string, array<int, string>>
-     */
     public function getErrors(): array
     {
         return $this->error()->getAll();
     }
 
-    /**
-     * @phpstan-param list<string> $onlyFields
-     * @phpstan-return array<array-key, string>
-     */
     public function getErrorSummary(array $onlyFields = [], bool $first = false): array
     {
         return $this->error()->getSummary($onlyFields, $first);
     }
 
-    /**
-     * @phpstan-return array<int|string, mixed>
-     */
     public function getFieldConfig(string $field): array
     {
         $nested = $this->getNestedFieldPath($field);
@@ -85,6 +76,12 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
             if ($nestedModel instanceof FormModelInterface) {
                 return $nestedModel->getFieldConfig($nestedAttribute);
             }
+        }
+
+        $fieldConfig = $this->getFieldPropertyAttribute($field, FieldConfig::class);
+
+        if ($fieldConfig instanceof FieldConfig) {
+            return $fieldConfig->value;
         }
 
         return $this->getFieldConfigs()[$field] ?? [];
@@ -100,9 +97,6 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
         return $this->error()->getFirstForField($field);
     }
 
-    /**
-     * @phpstan-return array<string, string>
-     */
     public function getFirstErrors(): array
     {
         return $this->error()->getAllFirst();
@@ -119,6 +113,12 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
             if ($nestedModel instanceof FormModelInterface) {
                 return $nestedModel->getHint($nestedAttribute);
             }
+        }
+
+        $hint = $this->getFieldPropertyAttribute($field, Hint::class);
+
+        if ($hint instanceof Hint) {
+            return $hint->value;
         }
 
         return $this->getHints()[$field] ?? '';
@@ -140,6 +140,12 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
             if ($nestedModel instanceof FormModelInterface) {
                 return $nestedModel->getLabel($nestedAttribute);
             }
+        }
+
+        $label = $this->getFieldPropertyAttribute($field, Label::class);
+
+        if ($label instanceof Label) {
+            return $label->value;
         }
 
         $generateLabel = WordCaseConverter::toTitleWords($field);
@@ -165,6 +171,12 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
             }
         }
 
+        $placeholder = $this->getFieldPropertyAttribute($field, Placeholder::class);
+
+        if ($placeholder instanceof Placeholder) {
+            return $placeholder->value;
+        }
+
         return $this->getPlaceholders()[$field] ?? '';
     }
 
@@ -173,9 +185,6 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
         return [];
     }
 
-    /**
-     * @phpstan-return array<mixed, mixed>|null
-     */
     public function getRule(string $field): array|null
     {
         $nested = $this->getNestedFieldPath($field);
@@ -200,9 +209,6 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
         return is_array($rule) ? $rule : null;
     }
 
-    /**
-     * @phpstan-return iterable<string, array<mixed, mixed>>
-     */
     public function getRules(): iterable
     {
         return [];
@@ -238,11 +244,30 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
     }
 
     /**
+     * Returns the first matching instantiated property attribute for a field.
+     *
+     * @param string $field Field name to check for the attribute.
+     * @param string $attribute Attribute class name to look for.
+     *
+     * @return object|null Instantiated attribute object if found, or `null` if not found.
+     */
+    private function getFieldPropertyAttribute(string $field, string $attribute): object|null
+    {
+        if (!Reflector::hasProperty($this, $field)) {
+            return null;
+        }
+
+        return Reflector::firstPropertyAttribute($this, $field, $attribute);
+    }
+
+    /**
      * Splits a field path into parent and nested segments.
      *
      * @throws InvalidArgumentException If the nested field path format is invalid.
      *
-     * @phpstan-return array{0: string, 1: string}|null
+     * @return array|null An array containing the parent field and nested field, or `null` if the path is not nested.
+     *
+     * @phpstan-return array{string, string}|null
      */
     private function getNestedFieldPath(string $field): array|null
     {

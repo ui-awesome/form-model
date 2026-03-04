@@ -6,9 +6,16 @@ namespace UIAwesome\FormModel\Tests\Support;
 
 use UIAwesome\FormModel\BaseFormModel;
 
+/**
+ * Stub nested profile form model used for tests.
+ *
+ * @copyright Copyright (C) 2024 Terabytesoftw.
+ * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
+ */
 final class Profile extends BaseFormModel
 {
     public Address $address;
+
     public string $bio = '';
 
     public function __construct(private readonly object|null $object = null)
