@@ -21,13 +21,21 @@ use function trim;
  *
  * Usage example:
  * ```php
+ * use UIAwesome\FormModel\Attribute\{FieldConfig, Hint, Label, Placeholder};
+ *
  * final class UserForm extends BaseFormModel
  * {
+ *     #[Hint('Use your account email address.')]
+ *     #[Label('Email address')]
+ *     #[Placeholder('name@example.com')]
+ *     #[FieldConfig(['class()' => ['w-full rounded-md border border-slate-300 px-3 py-2']])]
  *     public string $email = '';
  * }
  *
  * $form = new UserForm();
- * $form->addError('email', 'Email is invalid.');
+ *
+ * $label = $form->getLabel('email');
+ * // 'Email address'
  * ```
  *
  * @copyright Copyright (C) 2024 Terabytesoftw.
