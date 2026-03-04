@@ -1,11 +1,14 @@
 {
     "name": "ui-awesome/form-model",
     "type": "library",
-    "description": "UIAwesome Form Model for PHP.",
+    "description": "Form metadata and validation errors for model-driven PHP forms.",
     "keywords": [
         "ui-awesome",
         "form-model",
-        "php"
+        "php",
+        "metadata",
+        "validation",
+        "forms"
     ],
     "license": "BSD-3-Clause",
     "require": {
