@@ -48,16 +48,21 @@ declare(strict_types=1);
 namespace App\FormModel;
 
 use UIAwesome\FormModel\BaseFormModel;
+use UIAwesome\FormModel\Attribute\{FieldConfig, Hint, Label, Placeholder};
 
 final class SignInForm extends BaseFormModel
 {
+    #[Hint('Use your account email address.')]
+    #[Label('Email address')]
+    #[Placeholder('name@example.com')]
+    #[FieldConfig(['class' => ['w-full rounded-md border border-slate-300 px-3 py-2']])]
     public string $email = '';
+
     public string $password = '';
 
     public function getHints(): array
     {
         return [
-            'email' => 'Use your account email address.',
             'password' => 'Use at least 8 characters.',
         ];
     }
@@ -65,7 +70,6 @@ final class SignInForm extends BaseFormModel
     public function getLabels(): array
     {
         return [
-            'email' => 'Email address',
             'password' => 'Password',
         ];
     }
@@ -73,7 +77,6 @@ final class SignInForm extends BaseFormModel
     public function getPlaceholders(): array
     {
         return [
-            'email' => 'name@example.com',
             'password' => 'Enter your password',
         ];
     }
@@ -89,8 +92,8 @@ final class SignInForm extends BaseFormModel
     public function getFieldConfigs(): array
     {
         return [
-            'email' => [
-                'class()' => ['w-full rounded-md border border-slate-300 px-3 py-2'],
+            'password' => [
+                'class' => ['w-full rounded-md border border-slate-300 px-3 py-2'],
             ],
         ];
     }
@@ -99,7 +102,6 @@ final class SignInForm extends BaseFormModel
 $form = new SignInForm();
 
 $form->addError('email', 'Email is required.');
-
 $errors = $form->getErrors();
 /*
 [
@@ -123,6 +125,18 @@ $hint = $form->getHint('profile.address.city');
 $label = $form->getLabel('profile.address.city');
 $placeholder = $form->getPlaceholder('profile.address.city');
 $rules = $form->getRule('profile.address.city');
+```
+
+## Property attributes
+
+Property attributes are resolved first for metadata (`Hint`, `Label`, `Placeholder`, `FieldConfig`).
+Map methods (`getHints()`, `getLabels()`, `getPlaceholders()`, `getFieldConfigs()`) remain as fallback.
+
+```php
+$emailHint = $form->getHint('email');
+$emailLabel = $form->getLabel('email');
+$emailPlaceholder = $form->getPlaceholder('email');
+$emailFieldConfig = $form->getFieldConfig('email');
 ```
 
 ## Error collection and first-error mode

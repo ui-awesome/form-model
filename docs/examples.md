@@ -11,34 +11,38 @@ declare(strict_types=1);
 
 namespace App\FormModel;
 
+use UIAwesome\FormModel\Attribute\{Hint, Label, Placeholder};
 use UIAwesome\FormModel\BaseFormModel;
 
 final class ContactForm extends BaseFormModel
 {
+    #[Label('Full name')]
+    #[Placeholder('Ada Lovelace')]
     public string $name = '';
+
+    #[Hint('Use a valid email address.')]
+    #[Label('Email address')]
+    #[Placeholder('ada@example.com')]
     public string $email = '';
 
     public function getHints(): array
     {
         return [
             'name' => 'Enter your full name.',
-            'email' => 'Use a valid email address.',
         ];
     }
 
     public function getLabels(): array
     {
         return [
-            'name' => 'Full name',
-            'email' => 'Email address',
+            'email' => 'Email (map fallback)',
         ];
     }
 
     public function getPlaceholders(): array
     {
         return [
-            'name' => 'Ada Lovelace',
-            'email' => 'ada@example.com',
+            'email' => 'fallback@example.com',
         ];
     }
 }
@@ -50,6 +54,18 @@ echo $form->getLabel('name');
 
 echo $form->getHint('email');
 // "Use a valid email address."
+```
+
+## Attribute priority over map metadata
+
+```php
+<?php
+
+echo $form->getLabel('email');
+// "Email address" from #[Label(...)]
+
+echo $form->getHint('name');
+// "Enter your full name." from getHints() fallback
 ```
 
 ## Generated fallback labels
@@ -192,6 +208,6 @@ print_r($form->getFieldConfig('email'));
 
 ## Next steps
 
-- [Installation guide](installation.md)
-- [Configuration reference](configuration.md)
-- [Testing guide](testing.md)
+- 📚 [Installation guide](installation.md)
+- ⚙️ [Configuration reference](configuration.md)
+- 🧪 [Testing guide](testing.md)

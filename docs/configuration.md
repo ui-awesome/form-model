@@ -15,17 +15,22 @@ declare(strict_types=1);
 
 namespace App\FormModel;
 
+use UIAwesome\FormModel\Attribute\{FieldConfig, Hint, Label, Placeholder};
 use UIAwesome\FormModel\BaseFormModel;
 
 final class SignInForm extends BaseFormModel
 {
+    #[Hint('Use your account email address.')]
+    #[Label('Email address')]
+    #[Placeholder('name@example.com')]
+    #[FieldConfig(['class' => ['w-full rounded-md border border-slate-300 px-3 py-2']])]
     public string $email = '';
+
     public string $password = '';
 
     public function getHints(): array
     {
         return [
-            'email' => 'Use your account email address.',
             'password' => 'Use at least 8 characters.',
         ];
     }
@@ -33,7 +38,6 @@ final class SignInForm extends BaseFormModel
     public function getLabels(): array
     {
         return [
-            'email' => 'Email address',
             'password' => 'Password',
         ];
     }
@@ -41,7 +45,6 @@ final class SignInForm extends BaseFormModel
     public function getPlaceholders(): array
     {
         return [
-            'email' => 'name@example.com',
             'password' => 'Enter your password',
         ];
     }
@@ -57,20 +60,31 @@ final class SignInForm extends BaseFormModel
     public function getFieldConfigs(): array
     {
         return [
-            'email' => [
-                'class()' => ['w-full rounded-md border border-slate-300 px-3 py-2'],
+            'password' => [
+                'class' => ['w-full rounded-md border border-slate-300 px-3 py-2'],
             ],
         ];
     }
 }
 ```
 
+## Property metadata attributes
+
+You can declare metadata directly on properties with attributes:
+
+- `#[Hint('...')]`
+- `#[Label('...')]`
+- `#[Placeholder('...')]`
+- `#[FieldConfig([...])]`
+
+When a property has both attribute metadata and map metadata, the attribute value is used first.
+
 ## Metadata access behavior
 
-- `getHint()`, `getLabel()`, and `getPlaceholder()` resolve values from their map methods.
+- `getHint()`, `getLabel()`, and `getPlaceholder()` resolve values from attributes first, then map methods.
 - Missing labels fall back to generated title-case labels.
 - `getRule()` returns field rules or `null` when no rules exist.
-- `getFieldConfig()` returns field configuration for a single field.
+- `getFieldConfig()` resolves field configuration from attributes first, then map methods.
 
 ```php
 $label = $form->getLabel('email');
@@ -114,5 +128,5 @@ $summary = $form->getErrorSummary();
 
 ## Next steps
 
-- [Usage examples](examples.md)
-- [Testing guide](testing.md)
+- 💡 [Usage examples](examples.md)
+- 🧪 [Testing guide](testing.md)

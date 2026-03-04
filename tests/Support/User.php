@@ -6,9 +6,16 @@ namespace UIAwesome\FormModel\Tests\Support;
 
 use UIAwesome\FormModel\BaseFormModel;
 
+/**
+ * Stub user form model with nested profile relation used for tests.
+ *
+ * @copyright Copyright (C) 2024 Terabytesoftw.
+ * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
+ */
 final class User extends BaseFormModel
 {
     public string $name = '';
+
     public Profile $profile;
 
     public function __construct(private readonly object|null $object = null)
