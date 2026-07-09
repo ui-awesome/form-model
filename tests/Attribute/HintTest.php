@@ -11,16 +11,6 @@ use UIAwesome\FormModel\Tests\Support\Country;
 
 /**
  * Unit tests for hint metadata resolution.
- *
- * Test coverage.
- * - Falls back to `getHints()` map metadata when attributes are missing.
- * - Prioritizes property attributes over `getHints()` map metadata.
- * - Returns a hint for fields with declared metadata.
- * - Returns all hints as a field-keyed map.
- * - Returns an empty hint map when the model defines none.
- *
- * @copyright Copyright (C) 2026 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 final class HintTest extends TestCase
 {

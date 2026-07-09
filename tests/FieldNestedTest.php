@@ -14,15 +14,6 @@ use UIAwesome\FormModel\Tests\Support\User;
 
 /**
  * Unit tests for resolving nested field metadata and rules on composed form models.
- *
- * Test coverage.
- * - Rejects malformed nested field path strings containing empty segments.
- * - Resolves rules for nested fields, including nullable rule responses.
- * - Returns hints, labels, and placeholders for root and deeply nested field paths.
- * - Returns nested field configuration arrays for supported field paths.
- *
- * @copyright Copyright (C) 2024 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 final class FieldNestedTest extends TestCase
 {

@@ -11,16 +11,6 @@ use UIAwesome\FormModel\Tests\Support\Country;
 
 /**
  * Unit tests for label metadata resolution and fallback generation.
- *
- * Test coverage.
- * - Falls back to `getLabels()` map metadata when attributes are missing.
- * - Generates labels when explicit field labels are not configured.
- * - Prioritizes property attributes over `getLabels()` map metadata.
- * - Returns all labels as a field-keyed map.
- * - Returns labels for fields with declared metadata.
- *
- * @copyright Copyright (C) 2026 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 final class LabelTest extends TestCase
 {

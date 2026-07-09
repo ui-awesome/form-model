@@ -14,15 +14,12 @@ use Attribute;
  * #[FieldConfig(['class' => ['input', 'input-bordered']])]
  * public string $email = '';
  * ```
- *
- * @copyright Copyright (C) 2026 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class FieldConfig
+final readonly class FieldConfig
 {
     /**
      * @param array<int|string, mixed> $value
      */
-    public function __construct(public readonly array $value) {}
+    public function __construct(public array $value) {}
 }

@@ -11,16 +11,6 @@ use UIAwesome\FormModel\Tests\Support\User;
 
 /**
  * Unit tests for field configuration metadata resolution.
- *
- * Test coverage.
- * - Falls back to `getFieldConfigs()` maps when attributes are missing.
- * - Prioritizes property attributes over `getFieldConfigs()` maps.
- * - Returns an empty field configuration map when the model defines none.
- * - Returns empty field configuration for fields without metadata.
- * - Returns field configuration for declared fields.
- *
- * @copyright Copyright (C) 2026 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 final class FieldConfigTest extends TestCase
 {

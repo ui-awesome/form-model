@@ -12,20 +12,22 @@
     ],
     "license": "BSD-3-Clause",
     "require": {
-        "php": "^8.1",
+        "php": "^8.3",
         "ext-mbstring": "*",
-        "php-forge/helper": "^0.2",
+        "php-forge/helper": "^0.3",
         "ui-awesome/model": "^0.2@dev"
     },
     "require-dev": {
-        "infection/infection": "^0.27|^0.32",
+        "infection/infection": "^0.34",
         "maglnet/composer-require-checker": "^4.1",
-        "php-forge/coding-standard": "^0.1",
+        "php-forge/baseline": "^0.1",
+        "php-forge/coding-standard": "^0.3",
         "php-forge/support": "^0.3",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-strict-rules": "^2.0.3",
-        "phpunit/phpunit": "^10.5"
+        "phpunit/phpunit": "^12.5",
+        "yii2-extensions/scaffold": "^0.2"
     },
     "autoload": {
         "psr-4": {
@@ -40,13 +42,20 @@
     "extra": {
         "branch-alias": {
             "dev-main": "0.2.x-dev"
+        },
+        "scaffold": {
+            "allowed-packages": [
+                "php-forge/baseline",
+                "php-forge/coding-standard"
+            ]
         }
     },
     "config": {
         "sort-packages": true,
         "allow-plugins": {
             "infection/extension-installer": true,
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "yii2-extensions/scaffold": true
         }
     },
     "scripts": {

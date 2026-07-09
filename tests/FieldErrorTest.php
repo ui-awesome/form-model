@@ -9,15 +9,6 @@ use UIAwesome\FormModel\FieldError;
 
 /**
  * Unit tests for field-scoped error storage and summary behavior in {@see FieldError}.
- *
- * Test coverage.
- * - Adds, sets, clears, and reads errors for individual fields and full error collections.
- * - Handles empty-state reads without raising errors.
- * - Reports validation and error presence globally and for specific fields.
- * - Returns first-error views and full-error views for getters and summary methods.
- *
- * @copyright Copyright (C) 2024 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 final class FieldErrorTest extends TestCase
 {

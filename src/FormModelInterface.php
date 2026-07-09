@@ -19,9 +19,6 @@ use UIAwesome\Model\ModelInterface;
  * $form = new UserForm();
  * $form->addError('email', 'Email is invalid.');
  * ```
- *
- * @copyright Copyright (C) 2024 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 interface FormModelInterface extends ModelInterface
 {
