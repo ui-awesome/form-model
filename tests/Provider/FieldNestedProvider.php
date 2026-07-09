@@ -6,11 +6,6 @@ namespace UIAwesome\FormModel\Tests\Provider;
 
 /**
  * Data provider for {@see \UIAwesome\FormModel\Tests\FieldNestedTest}.
- *
- * Provides representative input/output pairs for nested field paths and expected values.
- *
- * @copyright Copyright (C) 2026 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 final class FieldNestedProvider
 {

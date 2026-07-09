@@ -37,9 +37,6 @@ use function trim;
  * $label = $form->getLabel('email');
  * // 'Email address'
  * ```
- *
- * @copyright Copyright (C) 2024 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 abstract class BaseFormModel extends BaseModel implements FormModelInterface
 {
@@ -254,10 +251,12 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
     /**
      * Returns the first matching instantiated property attribute for a field.
      *
-     * @param string $field Field name to check for the attribute.
-     * @param string $attribute Attribute class name to look for.
+     * @template TAttribute of object
      *
-     * @return object|null Instantiated attribute object if found, or `null` if not found.
+     * @param string $field Field name to check for the attribute.
+     * @param class-string<TAttribute> $attribute Attribute class name to look for.
+     *
+     * @return TAttribute|null Instantiated attribute object if found, or `null` if not found.
      */
     private function getFieldPropertyAttribute(string $field, string $attribute): object|null
     {
@@ -285,7 +284,7 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
 
         $result = explode('.', $field, 2);
         $parentField = trim($result[0]);
-        $nestedField = trim($result[1] ?? '');
+        $nestedField = trim($result[1]);
 
         if ($parentField === '' || $nestedField === '') {
             throw new InvalidArgumentException(Message::INVALID_NESTED_FIELD_PATH->getMessage($field));

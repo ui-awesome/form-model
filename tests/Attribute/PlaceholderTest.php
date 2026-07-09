@@ -11,16 +11,6 @@ use UIAwesome\FormModel\Tests\Support\Country;
 
 /**
  * Unit tests for placeholder metadata resolution.
- *
- * Test coverage.
- * - Falls back to `getPlaceholders()` map metadata when attributes are missing.
- * - Prioritizes property attributes over `getPlaceholders()` map metadata.
- * - Returns all placeholders as a field-keyed map.
- * - Returns an empty placeholder map when the model defines none.
- * - Returns placeholders for fields with declared metadata.
- *
- * @copyright Copyright (C) 2026 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 final class PlaceholderTest extends TestCase
 {

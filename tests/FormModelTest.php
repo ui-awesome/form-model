@@ -10,15 +10,6 @@ use UIAwesome\FormModel\Tests\Support\Country;
 
 /**
  * Unit tests for validation error and rule behavior in {@see BaseFormModel}.
- *
- * Test coverage.
- * - Adds, clears, and reads field-level validation errors, including first-error extraction.
- * - Reports field validation state transitions for specific fields.
- * - Returns aggregated errors and summaries for populated and empty model instances.
- * - Returns validation rules metadata for models without explicit rules.
- *
- * @copyright Copyright (C) 2024 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 final class FormModelTest extends TestCase
 {

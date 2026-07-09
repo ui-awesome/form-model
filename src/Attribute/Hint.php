@@ -14,12 +14,9 @@ use Attribute;
  * #[Hint('Used for account recovery notifications.')]
  * public string $email = '';
  * ```
- *
- * @copyright Copyright (C) 2026 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class Hint
+final readonly class Hint
 {
-    public function __construct(public readonly string $value) {}
+    public function __construct(public string $value) {}
 }

@@ -14,12 +14,9 @@ use Attribute;
  * #[Label('Email address')]
  * public string $email = '';
  * ```
- *
- * @copyright Copyright (C) 2026 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class Label
+final readonly class Label
 {
-    public function __construct(public readonly string $value) {}
+    public function __construct(public string $value) {}
 }
