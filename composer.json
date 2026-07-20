@@ -15,7 +15,7 @@
         "php": "^8.3",
         "ext-mbstring": "*",
         "php-forge/helper": "^0.3",
-        "ui-awesome/model": "^0.2@dev"
+        "ui-awesome/model": "^0.2"
     },
     "require-dev": {
         "infection/infection": "^0.34",
@@ -24,7 +24,7 @@
         "php-forge/coding-standard": "^0.3",
         "php-forge/support": "^0.3",
         "phpstan/extension-installer": "^1.4",
-        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan": "^2.2",
         "phpstan/phpstan-strict-rules": "^2.0.3",
         "phpunit/phpunit": "^12.5",
         "yii2-extensions/scaffold": "^0.2"
@@ -41,7 +41,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.2.x-dev"
+            "dev-main": "0.3.x-dev"
         },
         "scaffold": {
             "allowed-packages": [
