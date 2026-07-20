@@ -1,9 +1,9 @@
 <!-- markdownlint-disable MD041 -->
 <p align="center">
     <a href="https://github.com/ui-awesome/form-model" target="_blank">
-        <img src="https://avatars.githubusercontent.com/u/103309199?s%25253D400%252526u%25253Dca3561c692f53ed7eb290d3bb226a2828741606f%252526v%25253D4" height="100px" alt="UIAwesome">
+        <img src="https://raw.githubusercontent.com/ui-awesome/.github/refs/heads/main/logo/ui_awesome.png" alt="UI Awesome" width="25%">
     </a>
-    <h1 align="center">UIAwesome Form Model for PHP</h1>
+    <h1 align="center">Form Model for PHP</h1>
     <br>
 </p>
 <!-- markdownlint-enable MD041 -->
@@ -18,6 +18,9 @@
     <a href="https://github.com/ui-awesome/form-model/actions/workflows/static.yml" target="_blank">
         <img src="https://img.shields.io/github/actions/workflow/status/ui-awesome/form-model/static.yml?style=for-the-badge&label=PHPStan&logo=github" alt="PHPStan">
     </a>
+    <a href="https://github.com/ui-awesome/form-model/actions/workflows/security.yml" target="_blank">
+        <img src="https://img.shields.io/github/actions/workflow/status/ui-awesome/form-model/security.yml?style=for-the-badge&label=Security&logo=github" alt="Security">
+    </a>
 </p>
 
 <p align="center">
@@ -28,8 +31,8 @@
 ## Features
 
 <picture>
-    <source media="(min-width: 768px)" srcset="./docs/svgs/features.svg">
-    <img src="./docs/svgs/features-mobile.svg" alt="Feature Overview" style="width: 100%;">
+    <source media="(max-width: 767px)" srcset="./docs/svgs/features-mobile.svg">
+    <img src="./docs/svgs/features.svg" alt="Feature Overview" style="width: 100%;">
 </picture>
 
 ## Installation
@@ -168,7 +171,6 @@ For detailed configuration options and advanced usage.
 - ⚙️ [Configuration Reference](docs/configuration.md)
 - 💡 [Usage Examples](docs/examples.md)
 - 🧪 [Testing Guide](docs/testing.md)
-- 🛠️ [Development Guide](docs/development.md)
 - 🔄 [Upgrade Guide](UPGRADE.md)
 
 ## Package information
@@ -177,15 +179,17 @@ For detailed configuration options and advanced usage.
 [![Latest Stable Version](https://img.shields.io/packagist/v/ui-awesome/form-model.svg?style=for-the-badge&logo=packagist&logoColor=white&label=Stable)](https://packagist.org/packages/ui-awesome/form-model)
 [![Total Downloads](https://img.shields.io/packagist/dt/ui-awesome/form-model.svg?style=for-the-badge&logo=composer&logoColor=white&label=Downloads)](https://packagist.org/packages/ui-awesome/form-model)
 
-## Quality code
+## Project status
 
 [![Codecov](https://img.shields.io/codecov/c/github/ui-awesome/form-model.svg?style=for-the-badge&logo=codecov&logoColor=white&label=Coverage)](https://codecov.io/github/ui-awesome/form-model)
 [![PHPStan Level Max](https://img.shields.io/badge/PHPStan-Level%20Max-4F5D95.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ui-awesome/form-model/actions/workflows/static.yml)
+[![Quality](https://img.shields.io/github/actions/workflow/status/ui-awesome/form-model/quality.yml?style=for-the-badge&label=Quality&logo=github)](https://github.com/ui-awesome/form-model/actions/workflows/quality.yml)
 [![StyleCI](https://img.shields.io/badge/StyleCI-Passed-44CC11.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.styleci.io/repos/773961622?branch=main)
 
 ## Our social networks
 
 [![Follow on X](https://img.shields.io/badge/-Follow%20on%20X-1DA1F2.svg?style=for-the-badge&logo=x&logoColor=white&labelColor=000000)](https://x.com/Terabytesoftw)
+[![Follow on Facebook](https://img.shields.io/badge/-Follow%20on%20Facebook-1877F2.svg?style=for-the-badge&logo=facebook&logoColor=white&labelColor=000000)](https://www.facebook.com/wilmer.arambula.9)
 
 ## License
 

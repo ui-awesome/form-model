@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix(model): remove `FieldMetadata` and move dot-notation metadata resolution directly into `BaseFormModel` getter methods (@terabytesoftw).
 - feat(attribute): add property attributes (`Label`, `Hint`, `Placeholder`, `FieldConfig`) and integrate attribute-first metadata resolution with map fallback in `BaseFormModel` (@terabytesoftw).
 - chore: update dependencies and configuration files and remove copyright and license comments from files.
+- chore: replace manual metadata synchronization with scaffold-managed configuration, migrate CI from Super-Linter to quality and security workflows, and refresh README badges.
 
 ## 0.1.0 March 18, 2024
 
