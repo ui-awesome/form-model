@@ -58,9 +58,7 @@ interface FormModelInterface extends ModelInterface
      *
      * @param string $field Field name.
      *
-     * @return array Error list for the field.
-     *
-     * @phpstan-return array<int, string>
+     * @return array<int, string> Error list for the field.
      */
     public function getError(string $field): array;
 
@@ -72,9 +70,8 @@ interface FormModelInterface extends ModelInterface
      * $allErrors = $form->getErrors();
      * ```
      *
-     * @return array Errors indexed by field name. Returns an empty array when no errors exist.
-     *
-     * @phpstan-return array<string, array<int, string>>
+     * @return array<string, array<int, string>> Errors indexed by field name. Returns an empty array when no errors
+     * exist.
      */
     public function getErrors(): array;
 
@@ -86,44 +83,46 @@ interface FormModelInterface extends ModelInterface
      * $summary = $form->getErrorSummary(['email', 'username']);
      * ```
      *
-     * @param array $onlyFields Fields to include. Uses all fields when the list is empty.
+     * @param list<string> $onlyFields Fields to include. Uses all fields when the list is empty.
      * @param bool $first Whether to return only the first error of each field.
      *
-     * @return array Flat list of error messages when `$first` is `false`; field-indexed first errors when `$first` is
-     * `true`.
-     *
-     * @phpstan-param list<string> $onlyFields
-     * @phpstan-return array<int|string, string>
+     * @return array<int|string, string> Flat list of error messages when `$first` is `false`; field-indexed first
+     * errors when `$first` is `true`.
      */
     public function getErrorSummary(array $onlyFields = [], bool $first = false): array;
 
     /**
      * Returns the field configuration for one field.
      *
+     * A field configuration maps a method name to the argument, or list of arguments, applied to the field or to the
+     * widget that renders it.
+     *
      * Usage example:
      * ```php
      * $emailFieldConfig = $form->getFieldConfig('email');
+     * // ['class' => ['w-full rounded-md']]
      * ```
      *
      * @param string $field Field name.
      *
-     * @return array Field configuration for the field.
-     *
-     * @phpstan-return array<int|string, mixed>
+     * @return array<string, mixed> Field configuration for the field. Returns an empty array when the field has no
+     * configuration.
      */
     public function getFieldConfig(string $field): array;
 
     /**
      * Returns field configuration arrays indexed by field name.
      *
+     * Each configuration maps a method name to the argument, or list of arguments, applied to the field or to the
+     * widget that renders it.
+     *
      * Usage example:
      * ```php
      * $fieldConfig = $form->getFieldConfigs();
+     * // ['email' => ['class' => ['w-full rounded-md']]]
      * ```
      *
-     * @return array Field configuration arrays indexed by field name.
-     *
-     * @phpstan-return array<string, array<int|string, mixed>>
+     * @return array<string, array<string, mixed>> Field configuration arrays indexed by field name.
      */
     public function getFieldConfigs(): array;
 
@@ -149,9 +148,7 @@ interface FormModelInterface extends ModelInterface
      * $firstErrors = $form->getFirstErrors();
      * ```
      *
-     * @return array First errors indexed by field name. Returns an empty array when no errors exist.
-     *
-     * @phpstan-return array<string, string>
+     * @return array<string, string> First errors indexed by field name. Returns an empty array when no errors exist.
      */
     public function getFirstErrors(): array;
 
@@ -177,7 +174,7 @@ interface FormModelInterface extends ModelInterface
      * $hints = $form->getHints();
      * ```
      *
-     * @phpstan-return array<string, string>
+     * @return array<string, string> Hint text indexed by field name.
      */
     public function getHints(): array;
 
@@ -203,7 +200,7 @@ interface FormModelInterface extends ModelInterface
      * $labels = $form->getLabels();
      * ```
      *
-     * @phpstan-return array<string, string>
+     * @return array<string, string> Label text indexed by field name.
      */
     public function getLabels(): array;
 
@@ -229,7 +226,7 @@ interface FormModelInterface extends ModelInterface
      * $placeholders = $form->getPlaceholders();
      * ```
      *
-     * @phpstan-return array<string, string>
+     * @return array<string, string> Placeholder text indexed by field name.
      */
     public function getPlaceholders(): array;
 
@@ -243,9 +240,7 @@ interface FormModelInterface extends ModelInterface
      *
      * @param string $field Field name.
      *
-     * @return array|null Validation rules for the field, or `null` when no rules are defined.
-     *
-     * @phpstan-return array<mixed, mixed>|null
+     * @return array<mixed, mixed>|null Validation rules for the field, or `null` when no rules are defined.
      */
     public function getRule(string $field): array|null;
 
@@ -257,9 +252,7 @@ interface FormModelInterface extends ModelInterface
      * $rules = $form->getRules();
      * ```
      *
-     * @return iterable Validation rules indexed by field name.
-     *
-     * @phpstan-return iterable<string, array<mixed, mixed>>
+     * @return iterable<string, array<mixed, mixed>> Validation rules indexed by field name.
      */
     public function getRules(): iterable;
 
@@ -300,9 +293,7 @@ interface FormModelInterface extends ModelInterface
      * $form->setErrors(['email' => ['Email is invalid.']]);
      * ```
      *
-     * @param array $values Error messages indexed by field name.
-     *
-     * @phpstan-param array<string, array<int, string>> $values
+     * @param array<string, array<int, string>> $values Error messages indexed by field name.
      */
     public function setErrors(array $values): void;
 }

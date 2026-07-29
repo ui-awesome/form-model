@@ -6,8 +6,7 @@ namespace UIAwesome\FormModel\Tests\Attribute;
 
 use PHPUnit\Framework\TestCase;
 use UIAwesome\FormModel\BaseFormModel;
-use UIAwesome\FormModel\Tests\Support\AttributePriorityForm;
-use UIAwesome\FormModel\Tests\Support\Country;
+use UIAwesome\FormModel\Tests\Support\{AttributePriorityForm, Country};
 
 /**
  * Unit tests for hint metadata resolution.

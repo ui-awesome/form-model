@@ -12,9 +12,7 @@ use UIAwesome\FormModel\BaseFormModel;
 final class Address extends BaseFormModel
 {
     public string $city = '';
-
     public Country $country;
-
     public string $street = '';
 
     public function __construct(private readonly object|null $object = null)
@@ -35,16 +33,16 @@ final class Address extends BaseFormModel
     }
 
     /**
-     * @phpstan-return array<string, array<string, array<int, string>>>
+     * @return array<string, array<string, array<int, string>>>
      */
     public function getFieldConfigs(): array
     {
         return [
             'street' => [
-                'class()' => ['text-blue-100 dark:text-blue-100'],
+                'class' => ['text-blue-100 dark:text-blue-100'],
             ],
             'city' => [
-                'class()' => ['text-red-100 dark:text-red-100'],
+                'class' => ['text-red-100 dark:text-red-100'],
             ],
         ];
     }
@@ -74,7 +72,7 @@ final class Address extends BaseFormModel
     }
 
     /**
-     * @phpstan-return array<string, array<int, mixed>>
+     * @return array<string, array<int, mixed>>
      */
     public function getRules(): array
     {

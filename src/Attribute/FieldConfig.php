@@ -19,7 +19,8 @@ use Attribute;
 final readonly class FieldConfig
 {
     /**
-     * @param array<int|string, mixed> $value
+     * @param array<string, mixed> $value Method names mapped to the argument, or list of arguments, applied to the
+     * field or to the widget that renders it.
      */
     public function __construct(public array $value) {}
 }

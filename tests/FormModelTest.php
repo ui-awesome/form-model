@@ -6,7 +6,7 @@ namespace UIAwesome\FormModel\Tests;
 
 use PHPUnit\Framework\TestCase;
 use UIAwesome\FormModel\BaseFormModel;
-use UIAwesome\FormModel\Tests\Support\Country;
+use UIAwesome\FormModel\Tests\Support\{Country, TraversableRulesForm};
 
 /**
  * Unit tests for validation error and rule behavior in {@see BaseFormModel}.
@@ -169,6 +169,17 @@ final class FormModelTest extends TestCase
         self::assertEmpty(
             $formModel->getRules(),
             'Should return no validation rules when none are declared.',
+        );
+    }
+
+    public function testGetRuleWithTraversableRules(): void
+    {
+        $formModel = new TraversableRulesForm();
+
+        self::assertSame(
+            ['required'],
+            $formModel->getRule('name'),
+            'Traversable rule sets must be materialized before lookup.',
         );
     }
 

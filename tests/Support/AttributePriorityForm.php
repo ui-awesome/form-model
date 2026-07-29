@@ -13,7 +13,6 @@ use UIAwesome\FormModel\BaseFormModel;
 final class AttributePriorityForm extends BaseFormModel
 {
     public string $fallback = '';
-
     #[FieldConfig(['class' => ['attribute-priority']])]
     #[Hint('Attribute hint')]
     #[Label('Attribute label')]

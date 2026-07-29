@@ -12,7 +12,6 @@ use UIAwesome\FormModel\BaseFormModel;
 final class User extends BaseFormModel
 {
     public string $name = '';
-
     public Profile $profile;
 
     public function __construct(private readonly object|null $object = null)
@@ -32,13 +31,13 @@ final class User extends BaseFormModel
     }
 
     /**
-     * @phpstan-return array<string, array<string, array<int, string>>>
+     * @return array<string, array<string, array<int, string>>>
      */
     public function getFieldConfigs(): array
     {
         return [
             'name' => [
-                'class()' => ['text-gray-100 dark:text-gray-100'],
+                'class' => ['text-gray-100 dark:text-gray-100'],
             ],
         ];
     }
@@ -65,7 +64,7 @@ final class User extends BaseFormModel
     }
 
     /**
-     * @phpstan-return array<string, array<int, mixed>>
+     * @return array<string, array<int, mixed>>
      */
     public function getRules(): array
     {

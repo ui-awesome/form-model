@@ -12,7 +12,6 @@ use UIAwesome\FormModel\BaseFormModel;
 final class Profile extends BaseFormModel
 {
     public Address $address;
-
     public string $bio = '';
 
     public function __construct(private readonly object|null $object = null)
@@ -32,13 +31,13 @@ final class Profile extends BaseFormModel
     }
 
     /**
-     * @phpstan-return array<string, array<string, array<int, string>>>
+     * @return array<string, array<string, array<int, string>>>
      */
     public function getFieldConfigs(): array
     {
         return [
             'bio' => [
-                'class()' => ['text-green-100 dark:text-green-100'],
+                'class' => ['text-green-100 dark:text-green-100'],
             ],
         ];
     }
@@ -65,7 +64,7 @@ final class Profile extends BaseFormModel
     }
 
     /**
-     * @phpstan-return array<string, array<int, mixed>>
+     * @return array<string, array<int, mixed>>
      */
     public function getRules(): array
     {

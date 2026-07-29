@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.2.1 Under development
 
+- refactor(model): resolve nested field paths through a single helper in `BaseFormModel` instead of repeating the dispatch in every metadata getter.
+
 ## 0.2.0 July 20, 2026
 
 - feat(model): modernize the package API and documentation, including consistency improvements, structural cleanup, and migration guidance in `UPGRADE.md` (@terabytesoftw).

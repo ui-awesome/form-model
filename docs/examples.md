@@ -195,7 +195,7 @@ final class LoginForm extends BaseFormModel
     {
         return [
             'email' => [
-                'class()' => ['w-full rounded-md border border-slate-300 px-3 py-2'],
+                'class' => ['w-full rounded-md border border-slate-300 px-3 py-2'],
             ],
         ];
     }

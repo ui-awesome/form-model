@@ -13,7 +13,6 @@
     "license": "BSD-3-Clause",
     "require": {
         "php": "^8.3",
-        "ext-mbstring": "*",
         "php-forge/helper": "^0.3",
         "ui-awesome/model": "^0.2"
     },
@@ -41,7 +40,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.3.x-dev"
+            "dev-main": "0.2.x-dev"
         },
         "scaffold": {
             "allowed-packages": [

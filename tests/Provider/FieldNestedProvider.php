@@ -18,28 +18,28 @@ final class FieldNestedProvider
             'deep_city' => [
                 'profile.address.city',
                 [
-                    'class()' => ['text-red-100 dark:text-red-100'],
+                    'class' => ['text-red-100 dark:text-red-100'],
                 ],
                 'Should return field configuration for the deeply nested city field.',
             ],
             'deep_street' => [
                 'profile.address.street',
                 [
-                    'class()' => ['text-blue-100 dark:text-blue-100'],
+                    'class' => ['text-blue-100 dark:text-blue-100'],
                 ],
                 'Should return field configuration for the deeply nested street field.',
             ],
             'nested_profile' => [
                 'profile.bio',
                 [
-                    'class()' => ['text-green-100 dark:text-green-100'],
+                    'class' => ['text-green-100 dark:text-green-100'],
                 ],
                 'Should return field configuration for the nested profile field.',
             ],
             'root' => [
                 'name',
                 [
-                    'class()' => ['text-gray-100 dark:text-gray-100'],
+                    'class' => ['text-gray-100 dark:text-gray-100'],
                 ],
                 'Should return field configuration for the root field.',
             ],

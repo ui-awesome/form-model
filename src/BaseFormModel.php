@@ -28,7 +28,7 @@ use function trim;
  *     #[Hint('Use your account email address.')]
  *     #[Label('Email address')]
  *     #[Placeholder('name@example.com')]
- *     #[FieldConfig(['class()' => ['w-full rounded-md border border-slate-300 px-3 py-2']])]
+ *     #[FieldConfig(['class' => ['w-full rounded-md border border-slate-300 px-3 py-2']])]
  *     public string $email = '';
  * }
  *
@@ -72,15 +72,12 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
 
     public function getFieldConfig(string $field): array
     {
-        $nested = $this->getNestedFieldPath($field);
+        $nested = $this->resolveNested($field);
 
         if ($nested !== null) {
-            [$nestedName, $nestedAttribute] = $nested;
-            $nestedModel = $this->getValue($nestedName);
+            [$nestedModel, $nestedField] = $nested;
 
-            if ($nestedModel instanceof FormModelInterface) {
-                return $nestedModel->getFieldConfig($nestedAttribute);
-            }
+            return $nestedModel->getFieldConfig($nestedField);
         }
 
         $fieldConfig = $this->getFieldPropertyAttribute($field, FieldConfig::class);
@@ -109,15 +106,12 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
 
     public function getHint(string $field): string
     {
-        $nested = $this->getNestedFieldPath($field);
+        $nested = $this->resolveNested($field);
 
         if ($nested !== null) {
-            [$nestedName, $nestedAttribute] = $nested;
-            $nestedModel = $this->getValue($nestedName);
+            [$nestedModel, $nestedField] = $nested;
 
-            if ($nestedModel instanceof FormModelInterface) {
-                return $nestedModel->getHint($nestedAttribute);
-            }
+            return $nestedModel->getHint($nestedField);
         }
 
         $hint = $this->getFieldPropertyAttribute($field, Hint::class);
@@ -136,15 +130,12 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
 
     public function getLabel(string $field): string
     {
-        $nested = $this->getNestedFieldPath($field);
+        $nested = $this->resolveNested($field);
 
         if ($nested !== null) {
-            [$nestedName, $nestedAttribute] = $nested;
-            $nestedModel = $this->getValue($nestedName);
+            [$nestedModel, $nestedField] = $nested;
 
-            if ($nestedModel instanceof FormModelInterface) {
-                return $nestedModel->getLabel($nestedAttribute);
-            }
+            return $nestedModel->getLabel($nestedField);
         }
 
         $label = $this->getFieldPropertyAttribute($field, Label::class);
@@ -165,15 +156,12 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
 
     public function getPlaceholder(string $field): string
     {
-        $nested = $this->getNestedFieldPath($field);
+        $nested = $this->resolveNested($field);
 
         if ($nested !== null) {
-            [$nestedName, $nestedAttribute] = $nested;
-            $nestedModel = $this->getValue($nestedName);
+            [$nestedModel, $nestedField] = $nested;
 
-            if ($nestedModel instanceof FormModelInterface) {
-                return $nestedModel->getPlaceholder($nestedAttribute);
-            }
+            return $nestedModel->getPlaceholder($nestedField);
         }
 
         $placeholder = $this->getFieldPropertyAttribute($field, Placeholder::class);
@@ -192,15 +180,12 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
 
     public function getRule(string $field): array|null
     {
-        $nested = $this->getNestedFieldPath($field);
+        $nested = $this->resolveNested($field);
 
         if ($nested !== null) {
-            [$nestedName, $nestedAttribute] = $nested;
-            $nestedModel = $this->getValue($nestedName);
+            [$nestedModel, $nestedField] = $nested;
 
-            if ($nestedModel instanceof FormModelInterface) {
-                return $nestedModel->getRule($nestedAttribute);
-            }
+            return $nestedModel->getRule($nestedField);
         }
 
         $rules = $this->getRules();
@@ -272,9 +257,8 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
      *
      * @throws InvalidArgumentException If the nested field path format is invalid.
      *
-     * @return array|null An array containing the parent field and nested field, or `null` if the path is not nested.
-     *
-     * @phpstan-return array{string, string}|null
+     * @return array{string, string}|null An array containing the parent field and nested field, or `null` if the path
+     * is not nested.
      */
     private function getNestedFieldPath(string $field): array|null
     {
@@ -291,5 +275,36 @@ abstract class BaseFormModel extends BaseModel implements FormModelInterface
         }
 
         return [$parentField, $nestedField];
+    }
+
+    /**
+     * Resolves a dot-notation field path to the nested form model that owns the field.
+     *
+     * Returns `null` when the path is not nested or when the parent value is not a form model, so callers fall back to
+     * local metadata resolution using the original field name.
+     *
+     * @param string $field Field name, optionally in dot notation.
+     *
+     * @throws InvalidArgumentException If the nested field path format is invalid.
+     *
+     * @return array|null Nested form model and the field name to resolve on it, or `null` when the path resolves
+     * locally.
+     *
+     * @return array{FormModelInterface, string}|null
+     */
+    private function resolveNested(string $field): array|null
+    {
+        $nested = $this->getNestedFieldPath($field);
+
+        if ($nested !== null) {
+            [$parentField, $nestedField] = $nested;
+            $nestedModel = $this->getValue($parentField);
+
+            if ($nestedModel instanceof FormModelInterface) {
+                return [$nestedModel, $nestedField];
+            }
+        }
+
+        return null;
     }
 }
