@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace UIAwesome\FormModel\Tests\Attribute;
 
 use PHPUnit\Framework\TestCase;
-use UIAwesome\FormModel\Tests\Support\AttributePriorityForm;
-use UIAwesome\FormModel\Tests\Support\Country;
-use UIAwesome\FormModel\Tests\Support\User;
+use UIAwesome\FormModel\Tests\Support\{AttributePriorityForm, Country, User};
 
 /**
  * Unit tests for field configuration metadata resolution.
@@ -33,7 +31,7 @@ final class FieldConfigTest extends TestCase
 
         self::assertSame(
             [
-                'class()' => ['text-gray-100 dark:text-gray-100'],
+                'class' => ['text-gray-100 dark:text-gray-100'],
             ],
             $formModel->getFieldConfig('name'),
             'Should return field configuration metadata for declared fields.',

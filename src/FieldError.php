@@ -6,6 +6,7 @@ namespace UIAwesome\FormModel;
 
 use function array_flip;
 use function array_intersect_key;
+use function is_int;
 use function reset;
 
 /**
@@ -23,7 +24,7 @@ final class FieldError
     /**
      * Stores error messages indexed by field name.
      *
-     * @phpstan-var array<string, array<int, string>>
+     * @var array<string, array<int, string>>
      */
     private array $errors = [];
 
@@ -76,9 +77,8 @@ final class FieldError
      *
      * @param bool $first Whether to return only the first error for each field.
      *
-     * @return array Errors indexed by field name. Returns an empty array when no errors exist.
-     *
-     * @phpstan-return array<string, array<int, string>|string>
+     * @return array<string, array<int, string>|string> Errors indexed by field name. Returns an empty array when no
+     * errors exist.
      */
     public function get(bool $first = false): array
     {
@@ -92,7 +92,7 @@ final class FieldError
     /**
      * Returns all errors indexed by field name.
      *
-     * @phpstan-return array<string, array<int, string>>
+     * @return array<string, array<int, string>>
      */
     public function getAll(): array
     {
@@ -102,7 +102,7 @@ final class FieldError
     /**
      * Returns the first error for each field.
      *
-     * @phpstan-return array<string, string>
+     * @return array<string, string>
      */
     public function getAllFirst(): array
     {
@@ -121,9 +121,7 @@ final class FieldError
      * @param string $field Field name.
      * @param bool $first Whether to return only the first error.
      *
-     * @return array|string Error list for the field, or the first error when `$first` is `true`.
-     *
-     * @phpstan-return array<int, string>|string
+     * @return array<int, string>|string Error list for the field, or the first error when `$first` is `true`.
      */
     public function getField(string $field, bool $first = false): array|string
     {
@@ -145,7 +143,7 @@ final class FieldError
     /**
      * Returns all errors for one field.
      *
-     * @phpstan-return array<int, string>
+     * @return array<int, string>
      */
     public function getForField(string $field): array
     {
@@ -160,13 +158,10 @@ final class FieldError
      * $summary = $errors->getSummary(['email', 'username']);
      * ```
      *
-     * @param array $onlyFields Fields to include. Uses all fields when the list is empty.
+     * @param list<string> $onlyFields Fields to include. Uses all fields when the list is empty.
      * @param bool $first Whether to include only the first error for each field.
      *
-     * @return array Flat list of error messages.
-     *
-     * @phpstan-param list<string> $onlyFields
-     * @phpstan-return array<int|string, string>
+     * @return array<int|string, string> Flat list of error messages.
      */
     public function getSummary(array $onlyFields = [], bool $first = false): array
     {
@@ -232,9 +227,7 @@ final class FieldError
      * $errors->set(['email' => ['Email is invalid.']]);
      * ```
      *
-     * @param array $values Error messages indexed by field name.
-     *
-     * @phpstan-param array<string, array<int, string>> $values
+     * @param array<string, array<int, string>> $values Error messages indexed by field name.
      */
     public function set(array $values): void
     {
@@ -260,9 +253,7 @@ final class FieldError
     /**
      * Returns the first error for each field.
      *
-     * @return array First error messages indexed by field name.
-     *
-     * @phpstan-return array<string, string>
+     * @return array<string, string> First error messages indexed by field name.
      */
     private function getFirstFields(): array
     {
@@ -280,8 +271,9 @@ final class FieldError
     /**
      * Returns a summary containing the first error for each field.
      *
-     * @phpstan-param list<string> $onlyFields
-     * @phpstan-return array<int|string, string>
+     * @param list<string> $onlyFields Fields to include. Uses all fields when the list is empty.
+     *
+     * @return array<int|string, string> Flat list of first error messages for each field.
      */
     private function getSummaryFirst(array $onlyFields = []): array
     {
@@ -289,7 +281,6 @@ final class FieldError
 
         if ($onlyFields !== []) {
             $onlyFieldsMap = array_flip($onlyFields);
-
             $firstErrors = array_intersect_key($firstErrors, $onlyFieldsMap);
         }
 
@@ -299,8 +290,10 @@ final class FieldError
     /**
      * Flattens grouped errors into a summary list.
      *
-     * @phpstan-param array<int, array<int|string, string>>|array<string, array<int, string>> $errors
-     * @phpstan-return array<int|string, string>
+     * @param array<int, array<int|string, string>>|array<string, array<int, string>> $errors Grouped errors indexed by
+     * field name.
+     *
+     * @return array<int|string, string> Flat list of error messages.
      */
     private function renderSummary(array $errors): array
     {
