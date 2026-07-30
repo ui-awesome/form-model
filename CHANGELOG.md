@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.2.2 Under development
 
+- docs: simplify the upgrade guide around consumer-facing API changes.
+
 ## 0.2.1 July 29, 2026
 
 - refactor(model): resolve nested field paths through a single helper in `BaseFormModel` instead of repeating the dispatch in every metadata getter.
