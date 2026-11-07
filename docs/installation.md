@@ -21,9 +21,9 @@ Add to your `composer.json`.
 
 ```json
 {
-    "require": {
-        "ui-awesome/form-model": "^0.2"
-    }
+  "require": {
+    "ui-awesome/form-model": "^0.2"
+  }
 }
 ```
 
