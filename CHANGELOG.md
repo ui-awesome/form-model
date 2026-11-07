@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 0.2.2 Under development
 
 - docs: simplify the upgrade guide around consumer-facing API changes.
+- chore: remove obsolete scaffold tooling and align package maintenance checks with PHP Forge conventions.
 
 ## 0.2.1 July 29, 2026
 
