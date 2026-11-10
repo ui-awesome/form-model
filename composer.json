@@ -14,7 +14,7 @@
     "require": {
         "php": "^8.3",
         "php-forge/helper": "^0.3",
-        "ui-awesome/model": "^0.2"
+        "ui-awesome/model": "^0.3@dev"
     },
     "require-dev": {
         "infection/infection": "^0.35",
