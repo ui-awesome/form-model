@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - docs: simplify the upgrade guide around consumer-facing API changes.
 - chore: remove obsolete scaffold tooling and align package maintenance checks with PHP Forge conventions.
+- chore: update `ui-awesome/model` requirement to version `^0.3`.
 
 ## 0.2.1 July 29, 2026
 
