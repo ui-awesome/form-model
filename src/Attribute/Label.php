@@ -18,5 +18,15 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final readonly class Label
 {
-    public function __construct(public string $value) {}
+    /**
+     * Creates field label metadata.
+     *
+     * @param string $value Display label for the field.
+     */
+    public function __construct(
+        /**
+         * Display label for the field.
+         */
+        public string $value,
+    ) {}
 }

@@ -1,0 +1,4 @@
+interface:
+  display_name: "UI Awesome Form Model"
+  short_description: "Define form field metadata and field errors"
+  default_prompt: "Use $ui-awesome-form-model to define labels, hints and field-scoped errors on a form model."

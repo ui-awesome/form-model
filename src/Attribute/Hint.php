@@ -18,5 +18,15 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final readonly class Hint
 {
-    public function __construct(public string $value) {}
+    /**
+     * Creates field hint metadata.
+     *
+     * @param string $value Hint text for the field.
+     */
+    public function __construct(
+        /**
+         * Hint text for the field.
+         */
+        public string $value,
+    ) {}
 }
