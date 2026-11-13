@@ -92,7 +92,7 @@ final class FieldError
     /**
      * Returns all errors indexed by field name.
      *
-     * @return array<string, array<int, string>>
+     * @return array<string, array<int, string>> Non-empty errors indexed by field name.
      */
     public function getAll(): array
     {
@@ -102,7 +102,7 @@ final class FieldError
     /**
      * Returns the first error for each field.
      *
-     * @return array<string, string>
+     * @return array<string, string> First errors indexed by field name.
      */
     public function getAllFirst(): array
     {
@@ -143,7 +143,7 @@ final class FieldError
     /**
      * Returns all errors for one field.
      *
-     * @return array<int, string>
+     * @return array<int, string> Errors for the requested field.
      */
     public function getForField(string $field): array
     {
