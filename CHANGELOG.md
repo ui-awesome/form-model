@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.2.3 Under development
 
-- docs: link README guides and feature images to their online sources.
+- docs: link `README.md` guides and feature images to their online sources.
 
 ## 0.2.2 November 13, 2026
 
